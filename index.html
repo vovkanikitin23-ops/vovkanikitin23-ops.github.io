@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EuroCalc — Free Financial Calculators for Europe</title>
+<meta name="description" content="Free online mortgage calculator, VAT calculator and deposit calculator. Instant results, no registration needed.">
+<style>
+  
+
+  :root {
+    --bg: #f5f3ee;
+    --surface: #ffffff;
+    --surface2: #f0ede6;
+    --accent: #1a3a2e;
+    --accent2: #2d6a4f;
+    --accent-light: #d8ede2;
+    --text: #1a1a18;
+    --text2: #5a5a54;
+    --text3: #9a9a90;
+    --border: #e0ddd6;
+    --red: #c0392b;
+    --gold: #b7852a;
+    --radius: 14px;
+    --radius-sm: 8px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* NAV */
+  nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 40px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 100;
+  }
+  .logo { font-family: Georgia, 'Times New Roman', serif; font-size: 22px; color: var(--accent); letter-spacing: -0.5px; }
+  .logo span { color: var(--accent2); }
+  .nav-tabs { display: flex; gap: 4px; }
+  .nav-tab {
+    padding: 7px 16px; border-radius: 30px; border: none; background: none;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 13px; font-weight: 500;
+    color: var(--text2); cursor: pointer; transition: all .2s;
+  }
+  .nav-tab:hover { background: var(--surface2); color: var(--text); }
+  .nav-tab.active { background: var(--accent); color: #fff; }
+  .nav-right { font-size: 12px; color: var(--text3); }
+
+  /* HERO */
+  .hero {
+    text-align: center;
+    padding: 64px 24px 48px;
+    max-width: 600px; margin: 0 auto;
+  }
+  .hero-eyebrow {
+    display: inline-block; background: var(--accent-light); color: var(--accent2);
+    font-size: 11px; font-weight: 500; letter-spacing: .8px; text-transform: uppercase;
+    padding: 4px 14px; border-radius: 30px; margin-bottom: 18px;
+  }
+  .hero h1 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(32px, 5vw, 48px);
+    color: var(--accent);
+    line-height: 1.15;
+    margin-bottom: 14px;
+    letter-spacing: -1px;
+  }
+  .hero p { font-size: 16px; color: var(--text2); font-weight: 300; }
+
+  /* MAIN LAYOUT */
+  .container { max-width: 1000px; margin: 0 auto; padding: 0 24px 80px; }
+
+  /* CALCULATOR PANELS */
+  .calc-panel { display: none; }
+  .calc-panel.active { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+  @media(max-width: 680px) { .calc-panel.active { grid-template-columns: 1fr; } nav { padding: 14px 20px; } .nav-tab { padding: 6px 10px; font-size: 12px; } }
+
+  /* CARD */
+  .card {
+    background: var(--surface); border-radius: var(--radius);
+    border: 1px solid var(--border); padding: 28px;
+  }
+  .card-title { font-size: 13px; font-weight: 500; color: var(--text3); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 22px; }
+
+  /* FORM ELEMENTS */
+  .field { margin-bottom: 18px; }
+  .field label { display: block; font-size: 13px; color: var(--text2); margin-bottom: 6px; font-weight: 500; }
+  .input-wrap { position: relative; }
+  .input-prefix, .input-suffix {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    font-size: 14px; color: var(--text3); font-weight: 500; pointer-events: none;
+  }
+  .input-prefix { left: 14px; }
+  .input-suffix { right: 14px; }
+  input[type="number"], input[type="text"] {
+    width: 100%; padding: 12px 16px; border: 1px solid var(--border);
+    border-radius: var(--radius-sm); background: var(--bg);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 15px; color: var(--text);
+    transition: border-color .2s, box-shadow .2s; outline: none;
+    -moz-appearance: textfield;
+  }
+  input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+  input[type="number"]:focus, input[type="text"]:focus {
+    border-color: var(--accent2); box-shadow: 0 0 0 3px rgba(45,106,79,.12);
+  }
+  .has-prefix input { padding-left: 30px; }
+  .has-suffix input { padding-right: 42px; }
+
+  /* TOGGLE */
+  .toggle-group { display: flex; gap: 0; border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; background: var(--bg); }
+  .toggle-btn {
+    flex: 1; padding: 10px 8px; border: none; background: none; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 13px; font-weight: 500; color: var(--text2); cursor: pointer; transition: all .18s;
+  }
+  .toggle-btn.active { background: var(--accent); color: #fff; }
+
+  /* RANGE SLIDER */
+  .range-row { display: flex; align-items: center; gap: 12px; }
+  input[type="range"] {
+    flex: 1; -webkit-appearance: none; height: 4px;
+    background: var(--border); border-radius: 2px; outline: none;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%;
+    background: var(--accent); cursor: pointer; border: 2px solid #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,.2);
+  }
+  .range-val { font-size: 13px; font-weight: 500; color: var(--accent2); min-width: 52px; text-align: right; }
+
+  /* RESULTS */
+  .result-big {
+    text-align: center; padding: 28px 20px;
+    border-radius: var(--radius-sm); background: var(--accent);
+    color: #fff; margin-bottom: 16px;
+  }
+  .result-big .label { font-size: 12px; opacity: .7; margin-bottom: 6px; letter-spacing: .4px; }
+  .result-big .amount { font-family: Georgia, 'Times New Roman', serif; font-size: 40px; letter-spacing: -1px; }
+  .result-big .sub { font-size: 12px; opacity: .6; margin-top: 4px; }
+
+  .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+  .stat-box { background: var(--surface2); border-radius: var(--radius-sm); padding: 14px 16px; }
+  .stat-box .sl { font-size: 11px; color: var(--text3); margin-bottom: 4px; font-weight: 500; text-transform: uppercase; letter-spacing: .4px; }
+  .stat-box .sv { font-size: 18px; font-weight: 500; color: var(--text); }
+  .stat-box .sv.green { color: var(--accent2); }
+  .stat-box .sv.red { color: var(--red); }
+  .stat-box .sv.gold { color: var(--gold); }
+
+  /* PIE CHART */
+  .pie-wrap { display: flex; align-items: center; gap: 20px; padding: 16px; background: var(--surface2); border-radius: var(--radius-sm); margin-bottom: 16px; }
+  canvas { flex-shrink: 0; }
+  .pie-legend { flex: 1; }
+  .pie-legend-item { display: flex; align-items: center; gap: 8px; font-size: 13px; margin-bottom: 6px; }
+  .pie-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+  /* SCHEDULE TABLE */
+  .table-wrap { overflow-x: auto; margin-top: 8px; border-radius: var(--radius-sm); border: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead th { background: var(--surface2); padding: 10px 14px; text-align: right; font-weight: 500; color: var(--text2); font-size: 11px; text-transform: uppercase; letter-spacing: .4px; white-space: nowrap; }
+  thead th:first-child { text-align: left; }
+  tbody td { padding: 9px 14px; text-align: right; border-top: 1px solid var(--border); color: var(--text); }
+  tbody td:first-child { text-align: left; color: var(--text2); font-weight: 500; }
+  tbody tr:last-child td { font-weight: 500; background: var(--surface2); }
+
+  /* CTA */
+  .cta-box {
+    border: 1px solid var(--accent-light); background: var(--accent-light);
+    border-radius: var(--radius-sm); padding: 16px 18px;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  }
+  .cta-box p { font-size: 13px; color: var(--accent); font-weight: 500; }
+  .cta-box span { font-size: 12px; color: var(--accent2); display: block; font-weight: 400; }
+  .btn-cta {
+    padding: 10px 20px; background: var(--accent2); color: #fff; border: none;
+    border-radius: var(--radius-sm); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap;
+    transition: background .2s;
+  }
+  .btn-cta:hover { background: var(--accent); }
+
+  /* VAT specific */
+  .vat-result { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  @media(max-width: 500px) { .vat-result { grid-template-columns: 1fr; } }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border); background: var(--surface);
+    text-align: center; padding: 24px; font-size: 12px; color: var(--text3);
+  }
+  footer a { color: var(--text3); text-decoration: none; }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  .calc-panel.active { animation: fadeUp .25s ease; }
+  .result-big .amount { transition: color .15s; }
+
+  .section-divider { font-size: 12px; color: var(--text3); text-transform: uppercase; letter-spacing: .6px; font-weight: 500; margin: 20px 0 12px; padding-top: 16px; border-top: 1px solid var(--border); }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Euro<span>Calc</span>.eu</div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showCalc('mortgage')">Mortgage</button>
+    <button class="nav-tab" onclick="showCalc('vat')">VAT</button>
+    <button class="nav-tab" onclick="showCalc('deposit')">Deposit</button>
+  </div>
+  <div class="nav-right">🇪🇺 Free · No signup</div>
+</nav>
+
+<div class="hero">
+  <div class="hero-eyebrow">European Financial Tools</div>
+  <h1>Smart calculators for your money</h1>
+  <p>Mortgage, VAT, deposits — instant results, always free.</p>
+</div>
+
+<div class="container">
+
+  <!-- ==================== MORTGAGE ==================== -->
+  <div class="calc-panel active" id="panel-mortgage">
+    <div>
+      <div class="card">
+        <div class="card-title">Mortgage calculator</div>
+
+        <div class="field">
+          <label>Property price</label>
+          <div class="input-wrap has-prefix has-suffix">
+            <span class="input-prefix">€</span>
+            <input type="number" id="m-price" value="280000" min="10000" oninput="calcMortgage()">
+            <span class="input-suffix" id="m-price-lbl"></span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Down payment — <span id="m-dp-pct" style="color:var(--accent2);font-weight:500">20%</span></label>
+          <div class="range-row">
+            <input type="range" id="m-dp-range" min="5" max="80" value="20" step="1" oninput="updateDP()">
+            <span class="range-val" id="m-dp-val">€56,000</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Annual interest rate</label>
+          <div class="input-wrap has-suffix">
+            <input type="number" id="m-rate" value="4.5" min="0.1" max="20" step="0.1" oninput="calcMortgage()">
+            <span class="input-suffix">%</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Loan term</label>
+          <div class="toggle-group">
+            <button class="toggle-btn" onclick="setTerm(10)">10 yr</button>
+            <button class="toggle-btn" onclick="setTerm(15)">15 yr</button>
+            <button class="toggle-btn" onclick="setTerm(20)">20 yr</button>
+            <button class="toggle-btn active" onclick="setTerm(25)">25 yr</button>
+            <button class="toggle-btn" onclick="setTerm(30)">30 yr</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Payment type</label>
+          <div class="toggle-group">
+            <button class="toggle-btn active" id="m-type-annuity" onclick="setPayType('annuity')">Annuity</button>
+            <button class="toggle-btn" id="m-type-diff" onclick="setPayType('diff')">Differentiated</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <div class="card-title">Results</div>
+
+        <div class="result-big">
+          <div class="label">Monthly payment</div>
+          <div class="amount" id="m-monthly">€0</div>
+          <div class="sub" id="m-monthly-sub">principal + interest</div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-box">
+            <div class="sl">Loan amount</div>
+            <div class="sv" id="m-loan">€0</div>
+          </div>
+          <div class="stat-box">
+            <div class="sl">Total repayment</div>
+            <div class="sv" id="m-total">€0</div>
+          </div>
+          <div class="stat-box">
+            <div class="sl">Total interest</div>
+            <div class="sv red" id="m-interest">€0</div>
+          </div>
+          <div class="stat-box">
+            <div class="sl">Interest / loan</div>
+            <div class="sv gold" id="m-ratio">0%</div>
+          </div>
+        </div>
+
+        <div class="pie-wrap">
+          <canvas id="m-pie" width="90" height="90"></canvas>
+          <div class="pie-legend">
+            <div class="pie-legend-item"><div class="pie-dot" style="background:var(--accent)"></div><span id="m-leg-principal">Principal: €0</span></div>
+            <div class="pie-legend-item"><div class="pie-dot" style="background:var(--gold)"></div><span id="m-leg-interest">Interest: €0</span></div>
+          </div>
+        </div>
+
+        <div class="cta-box">
+          <div><p>Get the best mortgage rate</p><span>Compare offers from EU banks — free</span></div>
+          <button class="btn-cta">Apply now →</button>
+        </div>
+
+        <div class="section-divider">Payment schedule (first 12 months)</div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>#</th><th>Payment</th><th>Principal</th><th>Interest</th><th>Balance</th></tr>
+            </thead>
+            <tbody id="m-schedule"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== VAT ==================== -->
+  <div class="calc-panel" id="panel-vat">
+    <div>
+      <div class="card">
+        <div class="card-title">VAT calculator</div>
+
+        <div class="field">
+          <label>Amount</label>
+          <div class="input-wrap has-prefix">
+            <span class="input-prefix">€</span>
+            <input type="number" id="v-amount" value="1000" min="0" step="0.01" oninput="calcVAT()">
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Calculation type</label>
+          <div class="toggle-group">
+            <button class="toggle-btn active" id="v-type-add" onclick="setVatType('add')">Add VAT to price</button>
+            <button class="toggle-btn" id="v-type-extract" onclick="setVatType('extract')">Extract VAT from price</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>VAT rate</label>
+          <div class="toggle-group">
+            <button class="toggle-btn" onclick="setVatRate(0)">0%</button>
+            <button class="toggle-btn" onclick="setVatRate(5)">5%</button>
+            <button class="toggle-btn" onclick="setVatRate(10)">10%</button>
+            <button class="toggle-btn" onclick="setVatRate(12)">12%</button>
+            <button class="toggle-btn" onclick="setVatRate(20)">20%</button>
+            <button class="toggle-btn active" onclick="setVatRate(21)">21%</button>
+          </div>
+        </div>
+
+        <div class="field" style="margin-top:24px">
+          <label>Or enter custom rate</label>
+          <div class="input-wrap has-suffix">
+            <input type="number" id="v-custom" value="21" min="0" max="100" step="0.1" oninput="setVatCustom()">
+            <span class="input-suffix">%</span>
+          </div>
+        </div>
+
+        <div style="background:var(--surface2);border-radius:var(--radius-sm);padding:14px 16px;font-size:12px;color:var(--text3);line-height:1.7;margin-top:8px">
+          <strong style="color:var(--text2);display:block;margin-bottom:4px">EU VAT rates (standard):</strong>
+          Slovakia 20% · Czech Rep. 21% · Poland 23% · Germany 19% · France 20% · Austria 20%
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <div class="card-title">Results</div>
+
+        <div class="result-big" style="margin-bottom:16px">
+          <div class="label" id="v-main-label">Total with VAT</div>
+          <div class="amount" id="v-main">€0</div>
+        </div>
+
+        <div class="vat-result">
+          <div class="stat-box">
+            <div class="sl" id="v-net-label">Price excl. VAT</div>
+            <div class="sv green" id="v-net">€0</div>
+          </div>
+          <div class="stat-box">
+            <div class="sl">VAT amount</div>
+            <div class="sv gold" id="v-vat-amount">€0</div>
+          </div>
+          <div class="stat-box">
+            <div class="sl" id="v-gross-label">Price incl. VAT</div>
+            <div class="sv" id="v-gross">€0</div>
+          </div>
+        </div>
+
+        <div style="margin-top:16px;padding:16px;background:var(--surface2);border-radius:var(--radius-sm)">
+          <div class="pie-wrap" style="background:none;padding:0">
+            <canvas id="v-pie" width="90" height="90"></canvas>
+            <div class="pie-legend">
+              <div class="pie-legend-item"><div class="pie-dot" style="background:var(--accent)"></div><span id="v-leg-net">Net: €0</span></div>
+              <div class="pie-legend-item"><div class="pie-dot" style="background:var(--gold)"></div><span id="v-leg-vat">VAT: €0</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cta-box" style="margin-top:16px">
+          <div><p>Need VAT accounting software?</p><span>Compare EU-compliant tools — free trial</span></div>
+          <button class="btn-cta">See offers →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== DEPOSIT ==================== -->
+  <div class="calc-panel" id="panel-deposit">
+    <div>
+      <div class="card">
+        <div class="card-title">Deposit / savings calculator</div>
+
+        <div class="field">
+          <label>Initial deposit</label>
+          <div class="input-wrap has-prefix">
+            <span class="input-prefix">€</span>
+            <input type="number" id="d-amount" value="10000" min="100" oninput="calcDeposit()">
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Annual interest rate</label>
+          <div class="input-wrap has-suffix">
+            <input type="number" id="d-rate" value="3.5" min="0.1" max="30" step="0.1" oninput="calcDeposit()">
+            <span class="input-suffix">%</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Term (years) — <span id="d-term-lbl" style="color:var(--accent2);font-weight:500">5</span></label>
+          <div class="range-row">
+            <input type="range" id="d-term-range" min="1" max="30" value="5" step="1" oninput="updateDepTerm()">
+            <span class="range-val" id="d-term-val">5 yr</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Compounding</label>
+          <div class="toggle-group">
+            <button class="toggle-btn" onclick="setCompound('none')">None</button>
+            <button class="toggle-btn" onclick="setCompound('monthly')">Monthly</button>
+            <button class="toggle-btn active" onclick="setCompound('quarterly')">Quarterly</button>
+            <button class="toggle-btn" onclick="setCompound('yearly')">Yearly</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Monthly top-up (optional)</label>
+          <div class="input-wrap has-prefix">
+            <span class="input-prefix">€</span>
+            <input type="number" id="d-topup" value="0" min="0" oninput="calcDeposit()">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <div class="card-title">Results</div>
+
+        <div class="result-big">
+          <div class="label">Final balance</div>
+          <div class="amount" id="d-final">€0</div>
+          <div class="sub" id="d-final-sub">after interest</div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-box">
+            <div class="sl">Total deposited</div>
+            <div class="sv" id="d-deposited">€0</div>
+          </div>
+          <div class="stat-box">
+            <div class="sl">Interest earned</div>
+            <div class="sv green" id="d-earned">€0</div>
+          </div>
+          <div class="stat-box">
+            <div class="sl">Effective rate</div>
+            <div class="sv gold" id="d-eff-rate">0%</div>
+          </div>
+          <div class="stat-box">
+            <div class="sl">Return on deposit</div>
+            <div class="sv green" id="d-roi">0%</div>
+          </div>
+        </div>
+
+        <div class="pie-wrap">
+          <canvas id="d-pie" width="90" height="90"></canvas>
+          <div class="pie-legend">
+            <div class="pie-legend-item"><div class="pie-dot" style="background:var(--accent)"></div><span id="d-leg-dep">Deposited: €0</span></div>
+            <div class="pie-legend-item"><div class="pie-dot" style="background:var(--accent2)"></div><span id="d-leg-int">Interest: €0</span></div>
+          </div>
+        </div>
+
+        <div class="section-divider">Year-by-year growth</div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Year</th><th>Deposits</th><th>Interest</th><th>Balance</th></tr>
+            </thead>
+            <tbody id="d-schedule"></tbody>
+          </table>
+        </div>
+
+        <div class="cta-box" style="margin-top:16px">
+          <div><p>Find the best savings rate in Europe</p><span>Compare EU bank deposits — instant results</span></div>
+          <button class="btn-cta">Compare rates →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>© 2025 EuroCalc.eu · Free financial calculators for Europe · <a href="#">Privacy</a> · <a href="#">About</a></p>
+  <p style="margin-top:6px">Results are indicative only. Always consult a financial advisor before major decisions.</p>
+</footer>
+
+<script>
+/* ---- STATE ---- */
+let mTerm = 25, mPayType = 'annuity', vatType = 'add', vatRate = 21, compound = 'quarterly';
+
+/* ---- HELPERS ---- */
+const fmt = n => '€' + Math.round(n).toLocaleString('en-EU');
+const fmt2 = n => '€' + n.toLocaleString('en-EU', {minimumFractionDigits:2, maximumFractionDigits:2});
+const pct = n => n.toFixed(1) + '%';
+const val = id => parseFloat(document.getElementById(id).value) || 0;
+const el = id => document.getElementById(id);
+
+/* ---- PIE ---- */
+function drawPie(canvasId, v1, v2, c1, c2) {
+  const c = el(canvasId), ctx = c.getContext('2d');
+  const total = v1 + v2;
+  ctx.clearRect(0, 0, 90, 90);
+  if (total <= 0) return;
+  const r = 38, cx = 45, cy = 45;
+  const a1 = (v1 / total) * Math.PI * 2 - Math.PI/2;
+  ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,-Math.PI/2,a1); ctx.fillStyle=c1; ctx.fill();
+  ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,a1,-Math.PI/2); ctx.fillStyle=c2; ctx.fill();
+  ctx.beginPath(); ctx.arc(cx,cy,20,0,Math.PI*2); ctx.fillStyle='var(--surface)'; ctx.fill();
+}
+
+/* ======== MORTGAGE ======== */
+function setTerm(t) {
+  mTerm = t;
+  document.querySelectorAll('#panel-mortgage .toggle-group:nth-of-type(1) .toggle-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent.trim() === t+' yr');
+  });
+  calcMortgage();
+}
+function setPayType(t) {
+  mPayType = t;
+  el('m-type-annuity').classList.toggle('active', t==='annuity');
+  el('m-type-diff').classList.toggle('active', t==='diff');
+  calcMortgage();
+}
+function updateDP() {
+  const price = val('m-price'), dp = val('m-dp-range');
+  el('m-dp-pct').textContent = dp + '%';
+  el('m-dp-val').textContent = fmt(price * dp / 100);
+  calcMortgage();
+}
+function calcMortgage() {
+  const price = val('m-price');
+  const dpPct = val('m-dp-range');
+  const dp = price * dpPct / 100;
+  const loan = price - dp;
+  const rateAnn = val('m-rate') / 100;
+  const rateMonth = rateAnn / 12;
+  const n = mTerm * 12;
+
+  el('m-dp-val').textContent = fmt(dp);
+  el('m-dp-pct').textContent = dpPct + '%';
+
+  let monthly, totalPay, totalInterest;
+
+  if (mPayType === 'annuity') {
+    if (rateMonth === 0) { monthly = loan / n; }
+    else { monthly = loan * rateMonth * Math.pow(1+rateMonth,n) / (Math.pow(1+rateMonth,n)-1); }
+    totalPay = monthly * n;
+    totalInterest = totalPay - loan;
+  } else {
+    const principalPerMonth = loan / n;
+    totalInterest = 0;
+    for (let i = 1; i <= n; i++) {
+      totalInterest += (loan - principalPerMonth*(i-1)) * rateMonth;
+    }
+    totalPay = loan + totalInterest;
+    monthly = loan/n + loan * rateMonth;
+  }
+
+  el('m-monthly').textContent = fmt(monthly);
+  el('m-monthly-sub').textContent = mPayType === 'diff' ? 'first payment (decreases over time)' : 'fixed monthly payment';
+  el('m-loan').textContent = fmt(loan);
+  el('m-total').textContent = fmt(totalPay);
+  el('m-interest').textContent = fmt(totalInterest);
+  el('m-ratio').textContent = pct(totalInterest/loan*100);
+  el('m-leg-principal').textContent = 'Principal: ' + fmt(loan);
+  el('m-leg-interest').textContent = 'Interest: ' + fmt(totalInterest);
+  drawPie('m-pie', loan, totalInterest, 'var(--accent)', '#b7852a');
+
+  // Schedule (12 months)
+  let balance = loan;
+  let html = '';
+  const principalPerMonth = loan / n;
+  for (let i = 1; i <= Math.min(12, n); i++) {
+    let int, prin, pay;
+    if (mPayType === 'annuity') {
+      int = balance * rateMonth;
+      prin = monthly - int;
+      pay = monthly;
+    } else {
+      prin = principalPerMonth;
+      int = balance * rateMonth;
+      pay = prin + int;
+    }
+    balance -= prin;
+    html += `<tr><td>${i}</td><td>${fmt2(pay)}</td><td>${fmt2(prin)}</td><td>${fmt2(int)}</td><td>${fmt2(Math.max(0,balance))}</td></tr>`;
+  }
+  if (n > 12) html += `<tr><td colspan="5" style="text-align:center;color:var(--text3);font-style:italic">… ${n - 12} more payments</td></tr>`;
+  el('m-schedule').innerHTML = html;
+}
+
+/* ======== VAT ======== */
+function setVatType(t) {
+  vatType = t;
+  el('v-type-add').classList.toggle('active', t==='add');
+  el('v-type-extract').classList.toggle('active', t==='extract');
+  calcVAT();
+}
+function setVatRate(r) {
+  vatRate = r;
+  el('v-custom').value = r;
+  document.querySelectorAll('#panel-vat .toggle-group:nth-of-type(2) .toggle-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent.trim() === r+'%');
+  });
+  calcVAT();
+}
+function setVatCustom() {
+  vatRate = val('v-custom');
+  document.querySelectorAll('#panel-vat .toggle-group:nth-of-type(2) .toggle-btn').forEach(b => b.classList.remove('active'));
+  calcVAT();
+}
+function calcVAT() {
+  const amount = val('v-amount');
+  const rate = vatRate / 100;
+  let net, vat, gross;
+  if (vatType === 'add') {
+    net = amount; vat = amount * rate; gross = amount + vat;
+  } else {
+    gross = amount; net = amount / (1 + rate); vat = gross - net;
+  }
+  const mainVal = vatType === 'add' ? gross : net;
+  el('v-main-label').textContent = vatType === 'add' ? 'Total with VAT' : 'Price excl. VAT';
+  el('v-main').textContent = fmt2(mainVal);
+  el('v-net-label').textContent = 'Excl. VAT';
+  el('v-gross-label').textContent = 'Incl. VAT';
+  el('v-net').textContent = fmt2(net);
+  el('v-vat-amount').textContent = fmt2(vat);
+  el('v-gross').textContent = fmt2(gross);
+  el('v-leg-net').textContent = 'Net: ' + fmt2(net);
+  el('v-leg-vat').textContent = 'VAT: ' + fmt2(vat);
+  drawPie('v-pie', net, vat, 'var(--accent)', '#b7852a');
+}
+
+/* ======== DEPOSIT ======== */
+function setCompound(c) {
+  compound = c;
+  document.querySelectorAll('#panel-deposit .toggle-group:nth-of-type(1) .toggle-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent.trim().toLowerCase() === c);
+  });
+  calcDeposit();
+}
+function updateDepTerm() {
+  const t = val('d-term-range');
+  el('d-term-lbl').textContent = t;
+  el('d-term-val').textContent = t + ' yr';
+  calcDeposit();
+}
+function calcDeposit() {
+  const P = val('d-amount');
+  const r = val('d-rate') / 100;
+  const years = val('d-term-range');
+  const topup = val('d-topup');
+  const n = compound === 'monthly' ? 12 : compound === 'quarterly' ? 4 : compound === 'yearly' ? 1 : 0;
+
+  let balance = P;
+  let totalDeposited = P;
+  let html = '';
+
+  for (let y = 1; y <= years; y++) {
+    let yearStart = balance;
+    if (n === 0) {
+      balance += balance * r + topup * 12;
+    } else {
+      const periods = n;
+      for (let p = 0; p < periods; p++) {
+        balance += balance * (r / periods);
+      }
+      balance += topup * 12;
+    }
+    totalDeposited += topup * 12;
+    const interest = balance - totalDeposited + P;
+    html += `<tr><td>${y}</td><td>${fmt(totalDeposited)}</td><td>${fmt(balance - totalDeposited)}</td><td>${fmt(balance)}</td></tr>`;
+  }
+
+  const totalInterest = balance - totalDeposited;
+  const effRate = Math.pow(balance / P, 1/years) - 1;
+  const roi = (balance - totalDeposited) / totalDeposited * 100;
+
+  el('d-final').textContent = fmt(balance);
+  el('d-final-sub').textContent = `after ${years} year${years!==1?'s':''}`;
+  el('d-deposited').textContent = fmt(totalDeposited);
+  el('d-earned').textContent = fmt(totalInterest);
+  el('d-eff-rate').textContent = pct(effRate*100);
+  el('d-roi').textContent = pct(roi);
+  el('d-leg-dep').textContent = 'Deposited: ' + fmt(totalDeposited);
+  el('d-leg-int').textContent = 'Interest: ' + fmt(totalInterest);
+  drawPie('d-pie', totalDeposited, totalInterest, 'var(--accent)', 'var(--accent2)');
+  el('d-schedule').innerHTML = html;
+}
+
+/* ---- SHOW/HIDE ---- */
+function showCalc(name) {
+  document.querySelectorAll('.calc-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  el('panel-'+name).classList.add('active');
+  event.target.classList.add('active');
+  if(name==='vat') setTimeout(()=>{ drawPie('v-pie',0,0,'',''); calcVAT(); },50);
+  if(name==='deposit') setTimeout(()=>{ drawPie('d-pie',0,0,'',''); calcDeposit(); },50);
+}
+
+/* ---- INIT ---- */
+calcMortgage();
+calcVAT();
+calcDeposit();
+</script>
+</body>
+</html>

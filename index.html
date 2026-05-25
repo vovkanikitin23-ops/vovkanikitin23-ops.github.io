@@ -1,208 +1,169 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EuroCalc — Free Financial Calculators for Europe</title>
-<meta name="description" content="Free online mortgage calculator, VAT calculator and deposit calculator. Instant results, no registration needed.">
+<meta name="description" content="Free online mortgage calculator, VAT calculator, deposit calculator and live EUR exchange rates. Instant results, updated every minute.">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
-  
+:root {
+  --bg:#f5f3ee; --surface:#ffffff; --surface2:#f0ede6; --surface3:#e8e4db;
+  --accent:#1a3a2e; --accent2:#2d6a4f; --accent-light:#d8ede2;
+  --text:#1a1a18; --text2:#5a5a54; --text3:#9a9a90;
+  --border:#e0ddd6; --red:#c0392b; --gold:#b7852a; --radius:14px; --radius-sm:8px;
+  --shadow:0 1px 3px rgba(0,0,0,.06);
+}
+[data-theme="dark"] {
+  --bg:#0f1410; --surface:#1a2018; --surface2:#222b20; --surface3:#2a352a;
+  --accent:#4ade80; --accent2:#34d058; --accent-light:#1a2e1a;
+  --text:#e8f0e8; --text2:#9ab09a; --text3:#5a705a;
+  --border:#2a3a2a; --red:#f87171; --gold:#fbbf24;
+  --shadow:0 1px 3px rgba(0,0,0,.3);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.6;transition:background .2s,color .2s;}
 
-  :root {
-    --bg: #f5f3ee;
-    --surface: #ffffff;
-    --surface2: #f0ede6;
-    --accent: #1a3a2e;
-    --accent2: #2d6a4f;
-    --accent-light: #d8ede2;
-    --text: #1a1a18;
-    --text2: #5a5a54;
-    --text3: #9a9a90;
-    --border: #e0ddd6;
-    --red: #c0392b;
-    --gold: #b7852a;
-    --radius: 14px;
-    --radius-sm: 8px;
-  }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    font-size: 15px;
-    line-height: 1.6;
-    min-height: 100vh;
-  }
+nav{display:flex;align-items:center;justify-content:space-between;padding:16px 32px;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;gap:12px;flex-wrap:wrap;}
+.logo{font-size:20px;font-weight:600;color:var(--accent);letter-spacing:-0.5px;flex-shrink:0;}
+.logo span{color:var(--accent2);}
+.nav-tabs{display:flex;gap:4px;flex-wrap:wrap;}
+.nav-tab{padding:7px 14px;border-radius:30px;border:none;background:none;font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;transition:all .2s;white-space:nowrap;}
+.nav-tab:hover{background:var(--surface2);color:var(--text);}
+.nav-tab.active{background:var(--accent);color:#fff;}
+[data-theme="dark"] .nav-tab.active{color:#0f1410;}
+.nav-right{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.theme-btn{background:none;border:1px solid var(--border);border-radius:30px;padding:5px 12px;font-size:12px;color:var(--text2);cursor:pointer;transition:all .2s;white-space:nowrap;}
+.theme-btn:hover{background:var(--surface2);}
 
-  /* NAV */
-  nav {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 18px 40px;
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    position: sticky; top: 0; z-index: 100;
-  }
-  .logo { font-family: Georgia, 'Times New Roman', serif; font-size: 22px; color: var(--accent); letter-spacing: -0.5px; }
-  .logo span { color: var(--accent2); }
-  .nav-tabs { display: flex; gap: 4px; }
-  .nav-tab {
-    padding: 7px 16px; border-radius: 30px; border: none; background: none;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 13px; font-weight: 500;
-    color: var(--text2); cursor: pointer; transition: all .2s;
-  }
-  .nav-tab:hover { background: var(--surface2); color: var(--text); }
-  .nav-tab.active { background: var(--accent); color: #fff; }
-  .nav-right { font-size: 12px; color: var(--text3); }
+.hero{text-align:center;padding:48px 24px 36px;max-width:580px;margin:0 auto;}
+.hero-eyebrow{display:inline-block;background:var(--accent-light);color:var(--accent2);font-size:11px;font-weight:500;letter-spacing:.8px;text-transform:uppercase;padding:4px 14px;border-radius:30px;margin-bottom:16px;}
+[data-theme="dark"] .hero-eyebrow{color:var(--accent);}
+.hero h1{font-size:clamp(28px,5vw,44px);color:var(--accent);line-height:1.15;margin-bottom:12px;letter-spacing:-1px;font-weight:600;}
+.hero p{font-size:15px;color:var(--text2);font-weight:300;}
 
-  /* HERO */
-  .hero {
-    text-align: center;
-    padding: 64px 24px 48px;
-    max-width: 600px; margin: 0 auto;
-  }
-  .hero-eyebrow {
-    display: inline-block; background: var(--accent-light); color: var(--accent2);
-    font-size: 11px; font-weight: 500; letter-spacing: .8px; text-transform: uppercase;
-    padding: 4px 14px; border-radius: 30px; margin-bottom: 18px;
-  }
-  .hero h1 {
-    font-family: Georgia, 'Times New Roman', serif;
-    font-size: clamp(32px, 5vw, 48px);
-    color: var(--accent);
-    line-height: 1.15;
-    margin-bottom: 14px;
-    letter-spacing: -1px;
-  }
-  .hero p { font-size: 16px; color: var(--text2); font-weight: 300; }
+.container{max-width:1020px;margin:0 auto;padding:0 24px 80px;}
+.calc-panel{display:none;}
+.calc-panel.active{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;animation:fadeUp .22s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:680px){.calc-panel.active{grid-template-columns:1fr;}nav{padding:12px 16px;}.nav-tab{padding:6px 10px;font-size:12px;}}
 
-  /* MAIN LAYOUT */
-  .container { max-width: 1000px; margin: 0 auto; padding: 0 24px 80px; }
+.card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:24px;box-shadow:var(--shadow);}
+.card-title{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:20px;}
+.field{margin-bottom:16px;}
+.field label{display:block;font-size:13px;color:var(--text2);margin-bottom:5px;font-weight:500;}
+.input-wrap{position:relative;}
+.input-prefix,.input-suffix{position:absolute;top:50%;transform:translateY(-50%);font-size:14px;color:var(--text3);font-weight:500;pointer-events:none;}
+.input-prefix{left:13px;}.input-suffix{right:13px;}
+input[type="number"],input[type="text"]{width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);font-family:inherit;font-size:15px;color:var(--text);transition:border-color .2s,box-shadow .2s;outline:none;-moz-appearance:textfield;}
+input[type="number"]::-webkit-inner-spin-button{-webkit-appearance:none;}
+input[type="number"]:focus,input[type="text"]:focus{border-color:var(--accent2);box-shadow:0 0 0 3px rgba(45,106,79,.12);}
+.has-prefix input{padding-left:28px;}.has-suffix input{padding-right:40px;}
+.toggle-group{display:flex;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;background:var(--bg);}
+.toggle-btn{flex:1;padding:9px 6px;border:none;background:none;font-family:inherit;font-size:12px;font-weight:500;color:var(--text2);cursor:pointer;transition:all .15s;white-space:nowrap;}
+.toggle-btn:hover{background:var(--surface2);}
+.toggle-btn.active{background:var(--accent);color:#fff;}
+[data-theme="dark"] .toggle-btn.active{color:#0f1410;}
+.range-row{display:flex;align-items:center;gap:10px;}
+input[type="range"]{flex:1;-webkit-appearance:none;height:4px;background:var(--border);border-radius:2px;outline:none;}
+input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--accent);cursor:pointer;border:2px solid var(--surface);box-shadow:0 1px 4px rgba(0,0,0,.2);}
+.range-val{font-size:13px;font-weight:500;color:var(--accent2);min-width:52px;text-align:right;}
 
-  /* CALCULATOR PANELS */
-  .calc-panel { display: none; }
-  .calc-panel.active { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
-  @media(max-width: 680px) { .calc-panel.active { grid-template-columns: 1fr; } nav { padding: 14px 20px; } .nav-tab { padding: 6px 10px; font-size: 12px; } }
+.result-big{text-align:center;padding:24px 16px;border-radius:var(--radius-sm);background:var(--accent);color:#fff;margin-bottom:14px;}
+[data-theme="dark"] .result-big{color:#0f1410;}
+.result-big .label{font-size:11px;opacity:.7;margin-bottom:5px;letter-spacing:.4px;}
+.result-big .amount{font-size:38px;font-weight:600;letter-spacing:-1px;}
+.result-big .sub{font-size:11px;opacity:.6;margin-top:3px;}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
+.stat-box{background:var(--surface2);border-radius:var(--radius-sm);padding:12px 14px;}
+.stat-box .sl{font-size:10px;color:var(--text3);margin-bottom:3px;font-weight:500;text-transform:uppercase;letter-spacing:.4px;}
+.stat-box .sv{font-size:17px;font-weight:500;color:var(--text);}
+.sv.green{color:var(--accent2);}.sv.red{color:var(--red);}.sv.gold{color:var(--gold);}
+.pie-wrap{display:flex;align-items:center;gap:16px;padding:14px;background:var(--surface2);border-radius:var(--radius-sm);margin-bottom:14px;}
+canvas.pie{flex-shrink:0;}
+.pie-legend-item{display:flex;align-items:center;gap:8px;font-size:13px;margin-bottom:5px;color:var(--text);}
+.pie-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+.section-divider{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;font-weight:500;margin:18px 0 10px;padding-top:14px;border-top:1px solid var(--border);}
+.table-wrap{overflow-x:auto;border-radius:var(--radius-sm);border:1px solid var(--border);}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+thead th{background:var(--surface2);padding:9px 12px;text-align:right;font-weight:500;color:var(--text2);font-size:10px;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap;}
+thead th:first-child{text-align:left;}
+tbody td{padding:8px 12px;text-align:right;border-top:1px solid var(--border);color:var(--text);}
+tbody td:first-child{text-align:left;color:var(--text2);font-weight:500;}
+.cta-box{border:1px solid var(--accent-light);background:var(--accent-light);border-radius:var(--radius-sm);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+.cta-box p{font-size:13px;color:var(--accent);font-weight:500;}
+.cta-box span{font-size:12px;color:var(--accent2);display:block;font-weight:400;}
+.btn-cta{padding:9px 18px;background:var(--accent2);color:#fff;border:none;border-radius:var(--radius-sm);font-family:inherit;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;transition:background .2s;}
+.btn-cta:hover{background:var(--accent);}
+[data-theme="dark"] .btn-cta{color:#0f1410;}
+.copy-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);font-family:inherit;font-size:12px;color:var(--text2);cursor:pointer;transition:all .15s;margin-top:10px;}
+.copy-btn:hover{background:var(--surface2);border-color:var(--accent2);color:var(--accent2);}
+.copy-btn.copied{background:var(--accent-light);border-color:var(--accent2);color:var(--accent2);}
 
-  /* CARD */
-  .card {
-    background: var(--surface); border-radius: var(--radius);
-    border: 1px solid var(--border); padding: 28px;
-  }
-  .card-title { font-size: 13px; font-weight: 500; color: var(--text3); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 22px; }
+/* ---- CURRENCY ---- */
+#panel-currency.active{display:block;}
+.currency-top{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;}
+@media(max-width:680px){.currency-top{grid-template-columns:1fr;}}
+.rate-hero{background:var(--accent);color:#fff;border-radius:var(--radius);padding:24px;text-align:center;}
+[data-theme="dark"] .rate-hero{color:#0f1410;}
+.rate-hero .rate-label{font-size:11px;opacity:.7;letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px;}
+.rate-hero .rate-big{font-size:48px;font-weight:700;letter-spacing:-2px;line-height:1;}
+.rate-hero .rate-pair{font-size:13px;opacity:.7;margin-top:4px;}
+.rate-hero .rate-updated{font-size:11px;opacity:.5;margin-top:8px;}
+.fee-grid{display:grid;grid-template-columns:1fr;gap:8px;}
+.fee-row{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--surface2);border-radius:var(--radius-sm);border-left:3px solid transparent;}
+.fee-row.best{border-left-color:var(--accent2);}
+.fee-row.mid{border-left-color:var(--gold);}
+.fee-row.worst{border-left-color:var(--red);}
+.fee-name{font-size:13px;font-weight:500;color:var(--text);}
+.fee-pct{font-size:11px;color:var(--text3);margin-top:1px;}
+.fee-result{text-align:right;}
+.fee-amount{font-size:16px;font-weight:600;color:var(--text);}
+.fee-save{font-size:11px;color:var(--text3);margin-top:1px;}
+.chart-tabs{display:flex;gap:4px;margin-bottom:12px;}
+.chart-tab{padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:none;font-size:12px;font-weight:500;color:var(--text2);cursor:pointer;transition:all .15s;}
+.chart-tab.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+[data-theme="dark"] .chart-tab.active{color:#0f1410;}
+.chart-wrap{position:relative;height:200px;background:var(--surface2);border-radius:var(--radius-sm);padding:12px;}
+.chart-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--text3);border-radius:var(--radius-sm);}
+.pair-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-top:16px;}
+.pair-card{background:var(--surface2);border-radius:var(--radius-sm);padding:12px 14px;cursor:pointer;border:1px solid transparent;transition:all .15s;}
+.pair-card:hover{border-color:var(--accent2);}
+.pair-card.active-pair{border-color:var(--accent2);background:var(--accent-light);}
+.pair-card .pc-name{font-size:12px;color:var(--text2);font-weight:500;}
+.pair-card .pc-rate{font-size:18px;font-weight:600;color:var(--text);}
+.pair-card .pc-change{font-size:11px;margin-top:2px;}
+.pc-change.up{color:var(--accent2);}.pc-change.down{color:var(--red);}
 
-  /* FORM ELEMENTS */
-  .field { margin-bottom: 18px; }
-  .field label { display: block; font-size: 13px; color: var(--text2); margin-bottom: 6px; font-weight: 500; }
-  .input-wrap { position: relative; }
-  .input-prefix, .input-suffix {
-    position: absolute; top: 50%; transform: translateY(-50%);
-    font-size: 14px; color: var(--text3); font-weight: 500; pointer-events: none;
-  }
-  .input-prefix { left: 14px; }
-  .input-suffix { right: 14px; }
-  input[type="number"], input[type="text"] {
-    width: 100%; padding: 12px 16px; border: 1px solid var(--border);
-    border-radius: var(--radius-sm); background: var(--bg);
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 15px; color: var(--text);
-    transition: border-color .2s, box-shadow .2s; outline: none;
-    -moz-appearance: textfield;
-  }
-  input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
-  input[type="number"]:focus, input[type="text"]:focus {
-    border-color: var(--accent2); box-shadow: 0 0 0 3px rgba(45,106,79,.12);
-  }
-  .has-prefix input { padding-left: 30px; }
-  .has-suffix input { padding-right: 42px; }
+/* ---- FAQ ---- */
+.faq-section{margin-top:48px;padding-top:32px;border-top:1px solid var(--border);}
+.faq-section h2{font-size:22px;font-weight:600;color:var(--text);margin-bottom:6px;letter-spacing:-0.5px;}
+.faq-section .faq-sub{font-size:14px;color:var(--text2);margin-bottom:24px;}
+.faq-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:680px){.faq-grid{grid-template-columns:1fr;}}
+.faq-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px 18px;cursor:pointer;transition:border-color .15s;}
+.faq-item:hover{border-color:var(--accent2);}
+.faq-q{font-size:14px;font-weight:500;color:var(--text);display:flex;justify-content:space-between;align-items:center;gap:8px;}
+.faq-q::after{content:'+';font-size:18px;color:var(--text3);flex-shrink:0;transition:transform .2s;}
+.faq-item.open .faq-q::after{transform:rotate(45deg);}
+.faq-a{font-size:13px;color:var(--text2);line-height:1.7;margin-top:10px;display:none;}
+.faq-item.open .faq-a{display:block;}
 
-  /* TOGGLE */
-  .toggle-group { display: flex; gap: 0; border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; background: var(--bg); }
-  .toggle-btn {
-    flex: 1; padding: 10px 8px; border: none; background: none; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    font-size: 13px; font-weight: 500; color: var(--text2); cursor: pointer; transition: all .18s;
-  }
-  .toggle-btn.active { background: var(--accent); color: #fff; }
+/* ---- SEO content ---- */
+.seo-section{margin-top:40px;padding:28px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);}
+.seo-section h3{font-size:15px;font-weight:600;color:var(--text);margin-bottom:8px;}
+.seo-section p{font-size:13px;color:var(--text2);line-height:1.8;margin-bottom:12px;}
 
-  /* RANGE SLIDER */
-  .range-row { display: flex; align-items: center; gap: 12px; }
-  input[type="range"] {
-    flex: 1; -webkit-appearance: none; height: 4px;
-    background: var(--border); border-radius: 2px; outline: none;
-  }
-  input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%;
-    background: var(--accent); cursor: pointer; border: 2px solid #fff;
-    box-shadow: 0 1px 4px rgba(0,0,0,.2);
-  }
-  .range-val { font-size: 13px; font-weight: 500; color: var(--accent2); min-width: 52px; text-align: right; }
+/* ---- COUNTRIES ---- */
+.countries-section{margin-top:32px;}
+.countries-section h3{font-size:15px;font-weight:600;color:var(--text);margin-bottom:12px;}
+.country-chips{display:flex;flex-wrap:wrap;gap:8px;}
+.country-chip{padding:7px 14px;border:1px solid var(--border);border-radius:20px;font-size:13px;color:var(--text2);cursor:pointer;transition:all .15s;background:var(--surface);text-decoration:none;display:inline-block;}
+.country-chip:hover{border-color:var(--accent2);color:var(--accent2);background:var(--accent-light);}
 
-  /* RESULTS */
-  .result-big {
-    text-align: center; padding: 28px 20px;
-    border-radius: var(--radius-sm); background: var(--accent);
-    color: #fff; margin-bottom: 16px;
-  }
-  .result-big .label { font-size: 12px; opacity: .7; margin-bottom: 6px; letter-spacing: .4px; }
-  .result-big .amount { font-family: Georgia, 'Times New Roman', serif; font-size: 40px; letter-spacing: -1px; }
-  .result-big .sub { font-size: 12px; opacity: .6; margin-top: 4px; }
-
-  .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
-  .stat-box { background: var(--surface2); border-radius: var(--radius-sm); padding: 14px 16px; }
-  .stat-box .sl { font-size: 11px; color: var(--text3); margin-bottom: 4px; font-weight: 500; text-transform: uppercase; letter-spacing: .4px; }
-  .stat-box .sv { font-size: 18px; font-weight: 500; color: var(--text); }
-  .stat-box .sv.green { color: var(--accent2); }
-  .stat-box .sv.red { color: var(--red); }
-  .stat-box .sv.gold { color: var(--gold); }
-
-  /* PIE CHART */
-  .pie-wrap { display: flex; align-items: center; gap: 20px; padding: 16px; background: var(--surface2); border-radius: var(--radius-sm); margin-bottom: 16px; }
-  canvas { flex-shrink: 0; }
-  .pie-legend { flex: 1; }
-  .pie-legend-item { display: flex; align-items: center; gap: 8px; font-size: 13px; margin-bottom: 6px; }
-  .pie-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-
-  /* SCHEDULE TABLE */
-  .table-wrap { overflow-x: auto; margin-top: 8px; border-radius: var(--radius-sm); border: 1px solid var(--border); }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  thead th { background: var(--surface2); padding: 10px 14px; text-align: right; font-weight: 500; color: var(--text2); font-size: 11px; text-transform: uppercase; letter-spacing: .4px; white-space: nowrap; }
-  thead th:first-child { text-align: left; }
-  tbody td { padding: 9px 14px; text-align: right; border-top: 1px solid var(--border); color: var(--text); }
-  tbody td:first-child { text-align: left; color: var(--text2); font-weight: 500; }
-  tbody tr:last-child td { font-weight: 500; background: var(--surface2); }
-
-  /* CTA */
-  .cta-box {
-    border: 1px solid var(--accent-light); background: var(--accent-light);
-    border-radius: var(--radius-sm); padding: 16px 18px;
-    display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
-  }
-  .cta-box p { font-size: 13px; color: var(--accent); font-weight: 500; }
-  .cta-box span { font-size: 12px; color: var(--accent2); display: block; font-weight: 400; }
-  .btn-cta {
-    padding: 10px 20px; background: var(--accent2); color: #fff; border: none;
-    border-radius: var(--radius-sm); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap;
-    transition: background .2s;
-  }
-  .btn-cta:hover { background: var(--accent); }
-
-  /* VAT specific */
-  .vat-result { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
-  @media(max-width: 500px) { .vat-result { grid-template-columns: 1fr; } }
-
-  /* FOOTER */
-  footer {
-    border-top: 1px solid var(--border); background: var(--surface);
-    text-align: center; padding: 24px; font-size: 12px; color: var(--text3);
-  }
-  footer a { color: var(--text3); text-decoration: none; }
-
-  /* ANIMATIONS */
-  @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-  .calc-panel.active { animation: fadeUp .25s ease; }
-  .result-big .amount { transition: color .15s; }
-
-  .section-divider { font-size: 12px; color: var(--text3); text-transform: uppercase; letter-spacing: .6px; font-weight: 500; margin: 20px 0 12px; padding-top: 16px; border-top: 1px solid var(--border); }
+footer{border-top:1px solid var(--border);background:var(--surface);text-align:center;padding:24px;font-size:12px;color:var(--text3);}
+footer a{color:var(--text3);text-decoration:none;}
 </style>
 </head>
 <body>
@@ -210,549 +171,654 @@
 <nav>
   <div class="logo">Euro<span>Calc</span>.eu</div>
   <div class="nav-tabs">
-    <button class="nav-tab active" onclick="showCalc('mortgage')">Mortgage</button>
-    <button class="nav-tab" onclick="showCalc('vat')">VAT</button>
-    <button class="nav-tab" onclick="showCalc('deposit')">Deposit</button>
+    <button class="nav-tab" onclick="showCalc('currency',this)">💱 Currency</button>
+    <button class="nav-tab active" onclick="showCalc('mortgage',this)">Mortgage</button>
+    <button class="nav-tab" onclick="showCalc('vat',this)">VAT</button>
+    <button class="nav-tab" onclick="showCalc('deposit',this)">Deposit</button>
   </div>
-  <div class="nav-right">🇪🇺 Free · No signup</div>
+  <div class="nav-right">
+    <button class="theme-btn" onclick="toggleTheme()">🌙 Dark</button>
+  </div>
 </nav>
 
 <div class="hero">
   <div class="hero-eyebrow">European Financial Tools</div>
   <h1>Smart calculators for your money</h1>
-  <p>Mortgage, VAT, deposits — instant results, always free.</p>
+  <p>Live rates · Mortgage · VAT · Deposits — always free</p>
 </div>
 
 <div class="container">
 
-  <!-- ==================== MORTGAGE ==================== -->
-  <div class="calc-panel active" id="panel-mortgage">
-    <div>
-      <div class="card">
-        <div class="card-title">Mortgage calculator</div>
-
-        <div class="field">
-          <label>Property price</label>
-          <div class="input-wrap has-prefix has-suffix">
-            <span class="input-prefix">€</span>
-            <input type="number" id="m-price" value="280000" min="10000" oninput="calcMortgage()">
-            <span class="input-suffix" id="m-price-lbl"></span>
-          </div>
-        </div>
-
-        <div class="field">
-          <label>Down payment — <span id="m-dp-pct" style="color:var(--accent2);font-weight:500">20%</span></label>
-          <div class="range-row">
-            <input type="range" id="m-dp-range" min="5" max="80" value="20" step="1" oninput="updateDP()">
-            <span class="range-val" id="m-dp-val">€56,000</span>
-          </div>
-        </div>
-
-        <div class="field">
-          <label>Annual interest rate</label>
-          <div class="input-wrap has-suffix">
-            <input type="number" id="m-rate" value="4.5" min="0.1" max="20" step="0.1" oninput="calcMortgage()">
-            <span class="input-suffix">%</span>
-          </div>
-        </div>
-
-        <div class="field">
-          <label>Loan term</label>
-          <div class="toggle-group">
-            <button class="toggle-btn" onclick="setTerm(10)">10 yr</button>
-            <button class="toggle-btn" onclick="setTerm(15)">15 yr</button>
-            <button class="toggle-btn" onclick="setTerm(20)">20 yr</button>
-            <button class="toggle-btn active" onclick="setTerm(25)">25 yr</button>
-            <button class="toggle-btn" onclick="setTerm(30)">30 yr</button>
-          </div>
-        </div>
-
-        <div class="field">
-          <label>Payment type</label>
-          <div class="toggle-group">
-            <button class="toggle-btn active" id="m-type-annuity" onclick="setPayType('annuity')">Annuity</button>
-            <button class="toggle-btn" id="m-type-diff" onclick="setPayType('diff')">Differentiated</button>
-          </div>
-        </div>
-      </div>
+<!-- ==================== CURRENCY ==================== -->
+<div class="calc-panel" id="panel-currency">
+  <div class="currency-top">
+    <div class="rate-hero">
+      <div class="rate-label">EUR / <span id="c-pair-name">CZK</span> live rate</div>
+      <div class="rate-big" id="c-rate-big">—</div>
+      <div class="rate-pair">1 EUR = <span id="c-rate-sub">loading...</span></div>
+      <div class="rate-updated" id="c-updated">fetching rate...</div>
     </div>
-
-    <div>
-      <div class="card">
-        <div class="card-title">Results</div>
-
-        <div class="result-big">
-          <div class="label">Monthly payment</div>
-          <div class="amount" id="m-monthly">€0</div>
-          <div class="sub" id="m-monthly-sub">principal + interest</div>
-        </div>
-
-        <div class="stats-grid">
-          <div class="stat-box">
-            <div class="sl">Loan amount</div>
-            <div class="sv" id="m-loan">€0</div>
-          </div>
-          <div class="stat-box">
-            <div class="sl">Total repayment</div>
-            <div class="sv" id="m-total">€0</div>
-          </div>
-          <div class="stat-box">
-            <div class="sl">Total interest</div>
-            <div class="sv red" id="m-interest">€0</div>
-          </div>
-          <div class="stat-box">
-            <div class="sl">Interest / loan</div>
-            <div class="sv gold" id="m-ratio">0%</div>
-          </div>
-        </div>
-
-        <div class="pie-wrap">
-          <canvas id="m-pie" width="90" height="90"></canvas>
-          <div class="pie-legend">
-            <div class="pie-legend-item"><div class="pie-dot" style="background:var(--accent)"></div><span id="m-leg-principal">Principal: €0</span></div>
-            <div class="pie-legend-item"><div class="pie-dot" style="background:var(--gold)"></div><span id="m-leg-interest">Interest: €0</span></div>
-          </div>
-        </div>
-
-        <div class="cta-box">
-          <div><p>Get the best mortgage rate</p><span>Compare offers from EU banks — free</span></div>
-          <button class="btn-cta">Apply now →</button>
-        </div>
-
-        <div class="section-divider">Payment schedule (first 12 months)</div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr><th>#</th><th>Payment</th><th>Principal</th><th>Interest</th><th>Balance</th></tr>
-            </thead>
-            <tbody id="m-schedule"></tbody>
-          </table>
+    <div class="card" style="padding:20px">
+      <div class="card-title">Convert amount</div>
+      <div class="field">
+        <label>You send (EUR)</label>
+        <div class="input-wrap has-prefix">
+          <span class="input-prefix">€</span>
+          <input type="number" id="c-amount" value="100" min="0" oninput="calcCurrency()">
         </div>
       </div>
+      <div class="field">
+        <label>Currency — <span id="c-selected-name" style="color:var(--accent2);font-weight:500">CZK · Czech Koruna</span></label>
+        <input type="text" id="c-search" placeholder="🔍  Search (e.g. dollar, PLN, yen...)" oninput="filterCurrencies()" style="margin-bottom:8px">
+        <div id="c-currency-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:5px;max-height:172px;overflow-y:auto;padding:2px;"></div>
+      </div>
+      <div class="result-big" style="margin-top:4px">
+        <div class="label">You receive</div>
+        <div class="amount" id="c-result">—</div>
+        <div class="sub" id="c-result-sub">at ECB mid-market rate</div>
+      </div>
+      <button class="copy-btn" id="c-copy-btn" onclick="copyResult('c-copy-btn','c-result')">
+        📋 Copy result
+      </button>
     </div>
   </div>
 
-  <!-- ==================== VAT ==================== -->
-  <div class="calc-panel" id="panel-vat">
-    <div>
-      <div class="card">
-        <div class="card-title">VAT calculator</div>
-
-        <div class="field">
-          <label>Amount</label>
-          <div class="input-wrap has-prefix">
-            <span class="input-prefix">€</span>
-            <input type="number" id="v-amount" value="1000" min="0" step="0.01" oninput="calcVAT()">
-          </div>
-        </div>
-
-        <div class="field">
-          <label>Calculation type</label>
-          <div class="toggle-group">
-            <button class="toggle-btn active" id="v-type-add" onclick="setVatType('add')">Add VAT to price</button>
-            <button class="toggle-btn" id="v-type-extract" onclick="setVatType('extract')">Extract VAT from price</button>
-          </div>
-        </div>
-
-        <div class="field">
-          <label>VAT rate</label>
-          <div class="toggle-group">
-            <button class="toggle-btn" onclick="setVatRate(0)">0%</button>
-            <button class="toggle-btn" onclick="setVatRate(5)">5%</button>
-            <button class="toggle-btn" onclick="setVatRate(10)">10%</button>
-            <button class="toggle-btn" onclick="setVatRate(12)">12%</button>
-            <button class="toggle-btn" onclick="setVatRate(20)">20%</button>
-            <button class="toggle-btn active" onclick="setVatRate(21)">21%</button>
-          </div>
-        </div>
-
-        <div class="field" style="margin-top:24px">
-          <label>Or enter custom rate</label>
-          <div class="input-wrap has-suffix">
-            <input type="number" id="v-custom" value="21" min="0" max="100" step="0.1" oninput="setVatCustom()">
-            <span class="input-suffix">%</span>
-          </div>
-        </div>
-
-        <div style="background:var(--surface2);border-radius:var(--radius-sm);padding:14px 16px;font-size:12px;color:var(--text3);line-height:1.7;margin-top:8px">
-          <strong style="color:var(--text2);display:block;margin-bottom:4px">EU VAT rates (standard):</strong>
-          Slovakia 20% · Czech Rep. 21% · Poland 23% · Germany 19% · France 20% · Austria 20%
-        </div>
-      </div>
-    </div>
-
-    <div>
-      <div class="card">
-        <div class="card-title">Results</div>
-
-        <div class="result-big" style="margin-bottom:16px">
-          <div class="label" id="v-main-label">Total with VAT</div>
-          <div class="amount" id="v-main">€0</div>
-        </div>
-
-        <div class="vat-result">
-          <div class="stat-box">
-            <div class="sl" id="v-net-label">Price excl. VAT</div>
-            <div class="sv green" id="v-net">€0</div>
-          </div>
-          <div class="stat-box">
-            <div class="sl">VAT amount</div>
-            <div class="sv gold" id="v-vat-amount">€0</div>
-          </div>
-          <div class="stat-box">
-            <div class="sl" id="v-gross-label">Price incl. VAT</div>
-            <div class="sv" id="v-gross">€0</div>
-          </div>
-        </div>
-
-        <div style="margin-top:16px;padding:16px;background:var(--surface2);border-radius:var(--radius-sm)">
-          <div class="pie-wrap" style="background:none;padding:0">
-            <canvas id="v-pie" width="90" height="90"></canvas>
-            <div class="pie-legend">
-              <div class="pie-legend-item"><div class="pie-dot" style="background:var(--accent)"></div><span id="v-leg-net">Net: €0</span></div>
-              <div class="pie-legend-item"><div class="pie-dot" style="background:var(--gold)"></div><span id="v-leg-vat">VAT: €0</span></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="cta-box" style="margin-top:16px">
-          <div><p>Need VAT accounting software?</p><span>Compare EU-compliant tools — free trial</span></div>
-          <button class="btn-cta">See offers →</button>
-        </div>
-      </div>
+  <div class="card" style="margin-bottom:20px">
+    <div class="card-title">After fees — 100 EUR →</div>
+    <div class="fee-grid" id="fee-grid">
+      <div class="fee-row best"><div><div class="fee-name">Revolut / Wise</div><div class="fee-pct">~0.5% fee</div></div><div class="fee-result"><div class="fee-amount" id="fee-revolut">—</div><div class="fee-save" style="color:var(--accent2)">best rate</div></div></div>
+      <div class="fee-row mid"><div><div class="fee-name">PayPal</div><div class="fee-pct">~3.5% fee + spread</div></div><div class="fee-result"><div class="fee-amount" id="fee-paypal">—</div><div class="fee-save" id="fee-paypal-save"></div></div></div>
+      <div class="fee-row worst"><div><div class="fee-name">Traditional bank</div><div class="fee-pct">~2.5% fee + spread</div></div><div class="fee-result"><div class="fee-amount" id="fee-bank">—</div><div class="fee-save" id="fee-bank-save"></div></div></div>
     </div>
   </div>
 
-  <!-- ==================== DEPOSIT ==================== -->
-  <div class="calc-panel" id="panel-deposit">
-    <div>
-      <div class="card">
-        <div class="card-title">Deposit / savings calculator</div>
-
-        <div class="field">
-          <label>Initial deposit</label>
-          <div class="input-wrap has-prefix">
-            <span class="input-prefix">€</span>
-            <input type="number" id="d-amount" value="10000" min="100" oninput="calcDeposit()">
-          </div>
-        </div>
-
-        <div class="field">
-          <label>Annual interest rate</label>
-          <div class="input-wrap has-suffix">
-            <input type="number" id="d-rate" value="3.5" min="0.1" max="30" step="0.1" oninput="calcDeposit()">
-            <span class="input-suffix">%</span>
-          </div>
-        </div>
-
-        <div class="field">
-          <label>Term (years) — <span id="d-term-lbl" style="color:var(--accent2);font-weight:500">5</span></label>
-          <div class="range-row">
-            <input type="range" id="d-term-range" min="1" max="30" value="5" step="1" oninput="updateDepTerm()">
-            <span class="range-val" id="d-term-val">5 yr</span>
-          </div>
-        </div>
-
-        <div class="field">
-          <label>Compounding</label>
-          <div class="toggle-group">
-            <button class="toggle-btn" onclick="setCompound('none')">None</button>
-            <button class="toggle-btn" onclick="setCompound('monthly')">Monthly</button>
-            <button class="toggle-btn active" onclick="setCompound('quarterly')">Quarterly</button>
-            <button class="toggle-btn" onclick="setCompound('yearly')">Yearly</button>
-          </div>
-        </div>
-
-        <div class="field">
-          <label>Monthly top-up (optional)</label>
-          <div class="input-wrap has-prefix">
-            <span class="input-prefix">€</span>
-            <input type="number" id="d-topup" value="0" min="0" oninput="calcDeposit()">
-          </div>
-        </div>
-      </div>
+  <div class="card">
+    <div class="card-title">Rate history — EUR/<span class="c-pair-label">CZK</span></div>
+    <div class="chart-tabs">
+      <button class="chart-tab active" onclick="loadChart('1W',this)">1W</button>
+      <button class="chart-tab" onclick="loadChart('1M',this)">1M</button>
+      <button class="chart-tab" onclick="loadChart('1Y',this)">1Y</button>
     </div>
+    <div class="chart-wrap">
+      <div class="chart-loading" id="chart-loading">Loading chart...</div>
+      <canvas id="rateChart"></canvas>
+    </div>
+    <p style="font-size:11px;color:var(--text3);margin-top:8px">Source: European Central Bank via frankfurter.app · Updated daily</p>
+  </div>
 
-    <div>
-      <div class="card">
-        <div class="card-title">Results</div>
+  <div class="pair-grid" id="pair-grid"></div>
 
-        <div class="result-big">
-          <div class="label">Final balance</div>
-          <div class="amount" id="d-final">€0</div>
-          <div class="sub" id="d-final-sub">after interest</div>
-        </div>
+  <div class="countries-section">
+    <h3>Popular currency pairs</h3>
+    <div class="country-chips" id="country-chips-auto"></div>
+  </div>
 
-        <div class="stats-grid">
-          <div class="stat-box">
-            <div class="sl">Total deposited</div>
-            <div class="sv" id="d-deposited">€0</div>
-          </div>
-          <div class="stat-box">
-            <div class="sl">Interest earned</div>
-            <div class="sv green" id="d-earned">€0</div>
-          </div>
-          <div class="stat-box">
-            <div class="sl">Effective rate</div>
-            <div class="sv gold" id="d-eff-rate">0%</div>
-          </div>
-          <div class="stat-box">
-            <div class="sl">Return on deposit</div>
-            <div class="sv green" id="d-roi">0%</div>
-          </div>
-        </div>
+  <div class="seo-section" style="margin-top:28px">
+    <h3>Where does this exchange rate come from?</h3>
+    <p>EuroCalc uses the <strong>European Central Bank (ECB) reference rate</strong> — the official mid-market rate published daily. This is the "real" exchange rate, without bank markups or hidden fees.</p>
+    <h3>Why is the rate different at my bank?</h3>
+    <p>Banks and payment services add a <strong>spread</strong> (markup) on top of the ECB rate — typically 1.5%–4%. That's how they make profit on currency exchange. Services like Wise and Revolut charge much smaller fees (0.3%–0.5%), making them significantly cheaper for international transfers.</p>
+    <h3>How often is the rate updated?</h3>
+    <p>The ECB publishes rates every business day at approximately 16:00 CET. Our calculator fetches the latest rate automatically.</p>
+  </div>
 
-        <div class="pie-wrap">
-          <canvas id="d-pie" width="90" height="90"></canvas>
-          <div class="pie-legend">
-            <div class="pie-legend-item"><div class="pie-dot" style="background:var(--accent)"></div><span id="d-leg-dep">Deposited: €0</span></div>
-            <div class="pie-legend-item"><div class="pie-dot" style="background:var(--accent2)"></div><span id="d-leg-int">Interest: €0</span></div>
-          </div>
-        </div>
-
-        <div class="section-divider">Year-by-year growth</div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr><th>Year</th><th>Deposits</th><th>Interest</th><th>Balance</th></tr>
-            </thead>
-            <tbody id="d-schedule"></tbody>
-          </table>
-        </div>
-
-        <div class="cta-box" style="margin-top:16px">
-          <div><p>Find the best savings rate in Europe</p><span>Compare EU bank deposits — instant results</span></div>
-          <button class="btn-cta">Compare rates →</button>
-        </div>
+  <div class="faq-section">
+    <h2>Frequently asked questions</h2>
+    <div class="faq-sub">Everything you need to know about EUR exchange rates</div>
+    <div class="faq-grid">
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">What is the EUR/CZK rate today?</div>
+        <div class="faq-a" id="faq-rate-today">The current EUR/CZK rate is shown live at the top of this page. It updates daily based on ECB data.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">Why is PayPal's rate worse?</div>
+        <div class="faq-a">PayPal typically adds a 3–4% currency conversion fee on top of a less favourable base rate. On a €1,000 transfer, that's €30–40 lost to fees.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">What is the best service for EUR exchange?</div>
+        <div class="faq-a">For most people in Europe, Wise (formerly TransferWise) or Revolut offer the lowest fees — typically 0.3%–0.5%. For cash exchange, compare local exchange offices using the ECB rate as a benchmark.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">Is the ECB rate the same as the market rate?</div>
+        <div class="faq-a">Yes — the ECB rate is calculated from actual market transactions and represents the fair mid-market rate. No retail customer can exchange at exactly this rate, but it's the best reference point.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">Can I use this calculator for business invoicing?</div>
+        <div class="faq-a">Yes. The ECB rate is widely accepted for VAT calculations and cross-border EU invoicing. For official tax purposes, always check your local tax authority's published rate.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">What currencies does EuroCalc support?</div>
+        <div class="faq-a">We cover all major EUR pairs: CZK, PLN, HUF, USD, GBP, CHF, RON and more. All rates come from the ECB.</div>
       </div>
     </div>
   </div>
-
 </div>
+
+<!-- ==================== MORTGAGE ==================== -->
+<div class="calc-panel active" id="panel-mortgage">
+  <div>
+    <div class="card">
+      <div class="card-title">Mortgage calculator</div>
+      <div class="field"><label>Property price</label><div class="input-wrap has-prefix"><span class="input-prefix">€</span><input type="number" id="m-price" value="280000" min="10000" oninput="calcMortgage()"></div></div>
+      <div class="field">
+        <label>Down payment — <span id="m-dp-pct" style="color:var(--accent2);font-weight:500">20%</span></label>
+        <div class="range-row"><input type="range" id="m-dp-range" min="5" max="80" value="20" step="1" oninput="updateDP()"><span class="range-val" id="m-dp-val">€56,000</span></div>
+      </div>
+      <div class="field"><label>Annual interest rate</label><div class="input-wrap has-suffix"><input type="number" id="m-rate" value="4.5" min="0.1" max="20" step="0.1" oninput="calcMortgage()"><span class="input-suffix">%</span></div></div>
+      <div class="field"><label>Loan term</label>
+        <div class="toggle-group">
+          <button class="toggle-btn" onclick="setTerm(10,this)">10 yr</button>
+          <button class="toggle-btn" onclick="setTerm(15,this)">15 yr</button>
+          <button class="toggle-btn" onclick="setTerm(20,this)">20 yr</button>
+          <button class="toggle-btn active" onclick="setTerm(25,this)">25 yr</button>
+          <button class="toggle-btn" onclick="setTerm(30,this)">30 yr</button>
+        </div>
+      </div>
+      <div class="field"><label>Payment type</label>
+        <div class="toggle-group">
+          <button class="toggle-btn active" id="m-type-annuity" onclick="setPayType('annuity')">Annuity</button>
+          <button class="toggle-btn" id="m-type-diff" onclick="setPayType('diff')">Differentiated</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div class="card">
+      <div class="card-title">Results</div>
+      <div class="result-big"><div class="label">Monthly payment</div><div class="amount" id="m-monthly">€0</div><div class="sub" id="m-monthly-sub">principal + interest</div></div>
+      <div class="stats-grid">
+        <div class="stat-box"><div class="sl">Loan amount</div><div class="sv" id="m-loan">€0</div></div>
+        <div class="stat-box"><div class="sl">Total repayment</div><div class="sv" id="m-total">€0</div></div>
+        <div class="stat-box"><div class="sl">Total interest</div><div class="sv red" id="m-interest">€0</div></div>
+        <div class="stat-box"><div class="sl">Interest / loan</div><div class="sv gold" id="m-ratio">0%</div></div>
+      </div>
+      <div class="pie-wrap"><canvas class="pie" id="m-pie" width="88" height="88"></canvas><div class="pie-legend"><div class="pie-legend-item"><div class="pie-dot" style="background:var(--accent)"></div><span id="m-leg-principal">Principal: €0</span></div><div class="pie-legend-item"><div class="pie-dot" style="background:var(--gold)"></div><span id="m-leg-interest">Interest: €0</span></div></div></div>
+      <button class="copy-btn" id="m-copy-btn" onclick="copyResult('m-copy-btn','m-monthly')">📋 Copy monthly payment</button>
+      <div class="cta-box" style="margin-top:12px"><div><p>Get the best mortgage rate</p><span>Compare offers from EU banks — free</span></div><button class="btn-cta">Apply now →</button></div>
+      <div class="section-divider">Payment schedule (first 12 months)</div>
+      <div class="table-wrap"><table><thead><tr><th>#</th><th>Payment</th><th>Principal</th><th>Interest</th><th>Balance</th></tr></thead><tbody id="m-schedule"></tbody></table></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== VAT ==================== -->
+<div class="calc-panel" id="panel-vat">
+  <div>
+    <div class="card">
+      <div class="card-title">VAT calculator</div>
+      <div class="field"><label>Amount</label><div class="input-wrap has-prefix"><span class="input-prefix">€</span><input type="number" id="v-amount" value="1000" min="0" step="0.01" oninput="calcVAT()"></div></div>
+      <div class="field"><label>Calculation type</label>
+        <div class="toggle-group">
+          <button class="toggle-btn active" id="v-type-add" onclick="setVatType('add')">Add VAT to price</button>
+          <button class="toggle-btn" id="v-type-extract" onclick="setVatType('extract')">Extract VAT from price</button>
+        </div>
+      </div>
+      <div class="field"><label>VAT rate</label>
+        <div class="toggle-group">
+          <button class="toggle-btn" onclick="setVatRate(0)">0%</button>
+          <button class="toggle-btn" onclick="setVatRate(5)">5%</button>
+          <button class="toggle-btn" onclick="setVatRate(10)">10%</button>
+          <button class="toggle-btn" onclick="setVatRate(20)">20%</button>
+          <button class="toggle-btn active" onclick="setVatRate(21)">21%</button>
+        </div>
+      </div>
+      <div class="field"><label>Custom rate</label><div class="input-wrap has-suffix"><input type="number" id="v-custom" value="21" min="0" max="100" step="0.1" oninput="setVatCustom()"><span class="input-suffix">%</span></div></div>
+      <div style="background:var(--surface2);border-radius:var(--radius-sm);padding:12px 14px;font-size:12px;color:var(--text3);line-height:1.7;">
+        <strong style="color:var(--text2);display:block;margin-bottom:3px">Standard EU VAT rates:</strong>
+        Slovakia 20% · Czech Rep. 21% · Poland 23% · Germany 19% · France 20% · Austria 20%
+      </div>
+    </div>
+  </div>
+  <div>
+    <div class="card">
+      <div class="card-title">Results</div>
+      <div class="result-big"><div class="label" id="v-main-label">Total with VAT</div><div class="amount" id="v-main">€0</div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px;">
+        <div class="stat-box"><div class="sl">Excl. VAT</div><div class="sv green" id="v-net">€0</div></div>
+        <div class="stat-box"><div class="sl">VAT amount</div><div class="sv gold" id="v-vat-amount">€0</div></div>
+        <div class="stat-box"><div class="sl">Incl. VAT</div><div class="sv" id="v-gross">€0</div></div>
+      </div>
+      <div class="pie-wrap"><canvas class="pie" id="v-pie" width="88" height="88"></canvas><div class="pie-legend"><div class="pie-legend-item"><div class="pie-dot" style="background:var(--accent)"></div><span id="v-leg-net">Net: €0</span></div><div class="pie-legend-item"><div class="pie-dot" style="background:var(--gold)"></div><span id="v-leg-vat">VAT: €0</span></div></div></div>
+      <button class="copy-btn" id="v-copy-btn" onclick="copyResult('v-copy-btn','v-main')">📋 Copy result</button>
+      <div class="cta-box" style="margin-top:12px"><div><p>Need VAT accounting software?</p><span>Compare EU-compliant tools — free trial</span></div><button class="btn-cta">See offers →</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== DEPOSIT ==================== -->
+<div class="calc-panel" id="panel-deposit">
+  <div>
+    <div class="card">
+      <div class="card-title">Deposit / savings calculator</div>
+      <div class="field"><label>Initial deposit</label><div class="input-wrap has-prefix"><span class="input-prefix">€</span><input type="number" id="d-amount" value="10000" min="100" oninput="calcDeposit()"></div></div>
+      <div class="field"><label>Annual interest rate</label><div class="input-wrap has-suffix"><input type="number" id="d-rate" value="3.5" min="0.1" max="30" step="0.1" oninput="calcDeposit()"><span class="input-suffix">%</span></div></div>
+      <div class="field">
+        <label>Term — <span id="d-term-lbl" style="color:var(--accent2);font-weight:500">5</span> years</label>
+        <div class="range-row"><input type="range" id="d-term-range" min="1" max="30" value="5" step="1" oninput="updateDepTerm()"><span class="range-val" id="d-term-val">5 yr</span></div>
+      </div>
+      <div class="field"><label>Compounding</label>
+        <div class="toggle-group">
+          <button class="toggle-btn" onclick="setCompound('none')">None</button>
+          <button class="toggle-btn" onclick="setCompound('monthly')">Monthly</button>
+          <button class="toggle-btn active" onclick="setCompound('quarterly')">Quarterly</button>
+          <button class="toggle-btn" onclick="setCompound('yearly')">Yearly</button>
+        </div>
+      </div>
+      <div class="field"><label>Monthly top-up (optional)</label><div class="input-wrap has-prefix"><span class="input-prefix">€</span><input type="number" id="d-topup" value="0" min="0" oninput="calcDeposit()"></div></div>
+    </div>
+  </div>
+  <div>
+    <div class="card">
+      <div class="card-title">Results</div>
+      <div class="result-big"><div class="label">Final balance</div><div class="amount" id="d-final">€0</div><div class="sub" id="d-final-sub">after interest</div></div>
+      <div class="stats-grid">
+        <div class="stat-box"><div class="sl">Total deposited</div><div class="sv" id="d-deposited">€0</div></div>
+        <div class="stat-box"><div class="sl">Interest earned</div><div class="sv green" id="d-earned">€0</div></div>
+        <div class="stat-box"><div class="sl">Effective rate</div><div class="sv gold" id="d-eff-rate">0%</div></div>
+        <div class="stat-box"><div class="sl">Return on deposit</div><div class="sv green" id="d-roi">0%</div></div>
+      </div>
+      <div class="pie-wrap"><canvas class="pie" id="d-pie" width="88" height="88"></canvas><div class="pie-legend"><div class="pie-legend-item"><div class="pie-dot" style="background:var(--accent)"></div><span id="d-leg-dep">Deposited: €0</span></div><div class="pie-legend-item"><div class="pie-dot" style="background:var(--accent2)"></div><span id="d-leg-int">Interest: €0</span></div></div></div>
+      <button class="copy-btn" id="d-copy-btn" onclick="copyResult('d-copy-btn','d-final')">📋 Copy result</button>
+      <div class="section-divider">Year-by-year growth</div>
+      <div class="table-wrap"><table><thead><tr><th>Year</th><th>Deposits</th><th>Interest</th><th>Balance</th></tr></thead><tbody id="d-schedule"></tbody></table></div>
+      <div class="cta-box" style="margin-top:14px"><div><p>Find the best savings rate in Europe</p><span>Compare EU bank deposits — instant</span></div><button class="btn-cta">Compare rates →</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- FAQ for mortgage/vat/deposit -->
+<div id="general-faq" style="display:none">
+  <div class="faq-section">
+    <h2>Frequently asked questions</h2>
+    <div class="faq-sub">Quick answers about our calculators</div>
+    <div class="faq-grid">
+      <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">Are these calculators free?</div><div class="faq-a">Yes, all calculators on EuroCalc are completely free. No registration or signup required.</div></div>
+      <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">How accurate are the results?</div><div class="faq-a">Results use standard financial formulas. For mortgage calculations, actual bank offers may vary based on your credit score, insurance, and specific bank policies.</div></div>
+      <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">Which EU VAT rate should I use?</div><div class="faq-a">Use the rate of the country where the transaction takes place. Slovakia: 20%, Czech Republic: 21%, Poland: 23%, Germany: 19%, France & Austria: 20%.</div></div>
+      <div class="faq-item" onclick="toggleFaq(this)"><div class="faq-q">What is annuity vs differentiated payment?</div><div class="faq-a">Annuity: equal payments every month (easier to budget). Differentiated: larger payments at start that decrease over time (less total interest paid).</div></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /container -->
 
 <footer>
   <p>© 2025 EuroCalc.eu · Free financial calculators for Europe · <a href="#">Privacy</a> · <a href="#">About</a></p>
-  <p style="margin-top:6px">Results are indicative only. Always consult a financial advisor before major decisions.</p>
+  <p style="margin-top:5px">Results are indicative only. Always consult a financial advisor before major financial decisions.</p>
 </footer>
 
 <script>
-/* ---- STATE ---- */
-let mTerm = 25, mPayType = 'annuity', vatType = 'add', vatRate = 21, compound = 'quarterly';
-
-/* ---- HELPERS ---- */
+/* ============ HELPERS ============ */
 const fmt = n => '€' + Math.round(n).toLocaleString('en-EU');
-const fmt2 = n => '€' + n.toLocaleString('en-EU', {minimumFractionDigits:2, maximumFractionDigits:2});
-const pct = n => n.toFixed(1) + '%';
-const val = id => parseFloat(document.getElementById(id).value) || 0;
+const fmt2 = n => '€' + n.toLocaleString('en-EU',{minimumFractionDigits:2,maximumFractionDigits:2});
+const pct = n => n.toFixed(2) + '%';
+const val = id => parseFloat(document.getElementById(id).value)||0;
 const el = id => document.getElementById(id);
 
-/* ---- PIE ---- */
-function drawPie(canvasId, v1, v2, c1, c2) {
-  const c = el(canvasId), ctx = c.getContext('2d');
-  const total = v1 + v2;
-  ctx.clearRect(0, 0, 90, 90);
-  if (total <= 0) return;
-  const r = 38, cx = 45, cy = 45;
-  const a1 = (v1 / total) * Math.PI * 2 - Math.PI/2;
-  ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,-Math.PI/2,a1); ctx.fillStyle=c1; ctx.fill();
-  ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,r,a1,-Math.PI/2); ctx.fillStyle=c2; ctx.fill();
-  ctx.beginPath(); ctx.arc(cx,cy,20,0,Math.PI*2); ctx.fillStyle='var(--surface)'; ctx.fill();
+/* ============ THEME ============ */
+function toggleTheme(){
+  const t = document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme',t);
+  document.querySelector('.theme-btn').textContent = t==='dark'?'☀️ Light':'🌙 Dark';
+  redrawPies();
 }
 
-/* ======== MORTGAGE ======== */
-function setTerm(t) {
-  mTerm = t;
-  document.querySelectorAll('#panel-mortgage .toggle-group:nth-of-type(1) .toggle-btn').forEach(b => {
-    b.classList.toggle('active', b.textContent.trim() === t+' yr');
-  });
-  calcMortgage();
+/* ============ PIE ============ */
+const pies = {};
+function drawPie(canvasId,v1,v2,c1,c2){
+  const canvas = el(canvasId);
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const total = v1+v2;
+  ctx.clearRect(0,0,88,88);
+  if(total<=0) return;
+  const isDark = document.documentElement.getAttribute('data-theme')==='dark';
+  const surface = isDark?'#1a2018':'#ffffff';
+  const a1 = (v1/total)*Math.PI*2 - Math.PI/2;
+  ctx.beginPath(); ctx.moveTo(44,44); ctx.arc(44,44,38,-Math.PI/2,a1); ctx.fillStyle=c1; ctx.fill();
+  ctx.beginPath(); ctx.moveTo(44,44); ctx.arc(44,44,38,a1,-Math.PI/2); ctx.fillStyle=c2; ctx.fill();
+  ctx.beginPath(); ctx.arc(44,44,20,0,Math.PI*2); ctx.fillStyle=surface; ctx.fill();
 }
-function setPayType(t) {
-  mPayType = t;
-  el('m-type-annuity').classList.toggle('active', t==='annuity');
-  el('m-type-diff').classList.toggle('active', t==='diff');
-  calcMortgage();
-}
-function updateDP() {
-  const price = val('m-price'), dp = val('m-dp-range');
-  el('m-dp-pct').textContent = dp + '%';
-  el('m-dp-val').textContent = fmt(price * dp / 100);
-  calcMortgage();
-}
-function calcMortgage() {
-  const price = val('m-price');
-  const dpPct = val('m-dp-range');
-  const dp = price * dpPct / 100;
-  const loan = price - dp;
-  const rateAnn = val('m-rate') / 100;
-  const rateMonth = rateAnn / 12;
-  const n = mTerm * 12;
-
-  el('m-dp-val').textContent = fmt(dp);
-  el('m-dp-pct').textContent = dpPct + '%';
-
-  let monthly, totalPay, totalInterest;
-
-  if (mPayType === 'annuity') {
-    if (rateMonth === 0) { monthly = loan / n; }
-    else { monthly = loan * rateMonth * Math.pow(1+rateMonth,n) / (Math.pow(1+rateMonth,n)-1); }
-    totalPay = monthly * n;
-    totalInterest = totalPay - loan;
-  } else {
-    const principalPerMonth = loan / n;
-    totalInterest = 0;
-    for (let i = 1; i <= n; i++) {
-      totalInterest += (loan - principalPerMonth*(i-1)) * rateMonth;
-    }
-    totalPay = loan + totalInterest;
-    monthly = loan/n + loan * rateMonth;
-  }
-
-  el('m-monthly').textContent = fmt(monthly);
-  el('m-monthly-sub').textContent = mPayType === 'diff' ? 'first payment (decreases over time)' : 'fixed monthly payment';
-  el('m-loan').textContent = fmt(loan);
-  el('m-total').textContent = fmt(totalPay);
-  el('m-interest').textContent = fmt(totalInterest);
-  el('m-ratio').textContent = pct(totalInterest/loan*100);
-  el('m-leg-principal').textContent = 'Principal: ' + fmt(loan);
-  el('m-leg-interest').textContent = 'Interest: ' + fmt(totalInterest);
-  drawPie('m-pie', loan, totalInterest, 'var(--accent)', '#b7852a');
-
-  // Schedule (12 months)
-  let balance = loan;
-  let html = '';
-  const principalPerMonth = loan / n;
-  for (let i = 1; i <= Math.min(12, n); i++) {
-    let int, prin, pay;
-    if (mPayType === 'annuity') {
-      int = balance * rateMonth;
-      prin = monthly - int;
-      pay = monthly;
-    } else {
-      prin = principalPerMonth;
-      int = balance * rateMonth;
-      pay = prin + int;
-    }
-    balance -= prin;
-    html += `<tr><td>${i}</td><td>${fmt2(pay)}</td><td>${fmt2(prin)}</td><td>${fmt2(int)}</td><td>${fmt2(Math.max(0,balance))}</td></tr>`;
-  }
-  if (n > 12) html += `<tr><td colspan="5" style="text-align:center;color:var(--text3);font-style:italic">… ${n - 12} more payments</td></tr>`;
-  el('m-schedule').innerHTML = html;
+function redrawPies(){
+  calcMortgage(); calcVAT(); calcDeposit();
 }
 
-/* ======== VAT ======== */
-function setVatType(t) {
-  vatType = t;
-  el('v-type-add').classList.toggle('active', t==='add');
-  el('v-type-extract').classList.toggle('active', t==='extract');
-  calcVAT();
-}
-function setVatRate(r) {
-  vatRate = r;
-  el('v-custom').value = r;
-  document.querySelectorAll('#panel-vat .toggle-group:nth-of-type(2) .toggle-btn').forEach(b => {
-    b.classList.toggle('active', b.textContent.trim() === r+'%');
-  });
-  calcVAT();
-}
-function setVatCustom() {
-  vatRate = val('v-custom');
-  document.querySelectorAll('#panel-vat .toggle-group:nth-of-type(2) .toggle-btn').forEach(b => b.classList.remove('active'));
-  calcVAT();
-}
-function calcVAT() {
-  const amount = val('v-amount');
-  const rate = vatRate / 100;
-  let net, vat, gross;
-  if (vatType === 'add') {
-    net = amount; vat = amount * rate; gross = amount + vat;
-  } else {
-    gross = amount; net = amount / (1 + rate); vat = gross - net;
-  }
-  const mainVal = vatType === 'add' ? gross : net;
-  el('v-main-label').textContent = vatType === 'add' ? 'Total with VAT' : 'Price excl. VAT';
-  el('v-main').textContent = fmt2(mainVal);
-  el('v-net-label').textContent = 'Excl. VAT';
-  el('v-gross-label').textContent = 'Incl. VAT';
-  el('v-net').textContent = fmt2(net);
-  el('v-vat-amount').textContent = fmt2(vat);
-  el('v-gross').textContent = fmt2(gross);
-  el('v-leg-net').textContent = 'Net: ' + fmt2(net);
-  el('v-leg-vat').textContent = 'VAT: ' + fmt2(vat);
-  drawPie('v-pie', net, vat, 'var(--accent)', '#b7852a');
+/* ============ COPY ============ */
+function copyResult(btnId, valId){
+  const text = el(valId).textContent;
+  navigator.clipboard.writeText(text).catch(()=>{});
+  const btn = el(btnId);
+  const orig = btn.innerHTML;
+  btn.innerHTML = '✅ Copied!';
+  btn.classList.add('copied');
+  setTimeout(()=>{ btn.innerHTML=orig; btn.classList.remove('copied'); }, 2000);
 }
 
-/* ======== DEPOSIT ======== */
-function setCompound(c) {
-  compound = c;
-  document.querySelectorAll('#panel-deposit .toggle-group:nth-of-type(1) .toggle-btn').forEach(b => {
-    b.classList.toggle('active', b.textContent.trim().toLowerCase() === c);
-  });
-  calcDeposit();
-}
-function updateDepTerm() {
-  const t = val('d-term-range');
-  el('d-term-lbl').textContent = t;
-  el('d-term-val').textContent = t + ' yr';
-  calcDeposit();
-}
-function calcDeposit() {
-  const P = val('d-amount');
-  const r = val('d-rate') / 100;
-  const years = val('d-term-range');
-  const topup = val('d-topup');
-  const n = compound === 'monthly' ? 12 : compound === 'quarterly' ? 4 : compound === 'yearly' ? 1 : 0;
+/* ============ FAQ ============ */
+function toggleFaq(item){ item.classList.toggle('open'); }
 
-  let balance = P;
-  let totalDeposited = P;
-  let html = '';
-
-  for (let y = 1; y <= years; y++) {
-    let yearStart = balance;
-    if (n === 0) {
-      balance += balance * r + topup * 12;
-    } else {
-      const periods = n;
-      for (let p = 0; p < periods; p++) {
-        balance += balance * (r / periods);
-      }
-      balance += topup * 12;
-    }
-    totalDeposited += topup * 12;
-    const interest = balance - totalDeposited + P;
-    html += `<tr><td>${y}</td><td>${fmt(totalDeposited)}</td><td>${fmt(balance - totalDeposited)}</td><td>${fmt(balance)}</td></tr>`;
-  }
-
-  const totalInterest = balance - totalDeposited;
-  const effRate = Math.pow(balance / P, 1/years) - 1;
-  const roi = (balance - totalDeposited) / totalDeposited * 100;
-
-  el('d-final').textContent = fmt(balance);
-  el('d-final-sub').textContent = `after ${years} year${years!==1?'s':''}`;
-  el('d-deposited').textContent = fmt(totalDeposited);
-  el('d-earned').textContent = fmt(totalInterest);
-  el('d-eff-rate').textContent = pct(effRate*100);
-  el('d-roi').textContent = pct(roi);
-  el('d-leg-dep').textContent = 'Deposited: ' + fmt(totalDeposited);
-  el('d-leg-int').textContent = 'Interest: ' + fmt(totalInterest);
-  drawPie('d-pie', totalDeposited, totalInterest, 'var(--accent)', 'var(--accent2)');
-  el('d-schedule').innerHTML = html;
-}
-
-/* ---- SHOW/HIDE ---- */
-function showCalc(name) {
-  document.querySelectorAll('.calc-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+/* ============ SHOW/HIDE ============ */
+function showCalc(name, btn){
+  document.querySelectorAll('.calc-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
   el('panel-'+name).classList.add('active');
-  event.target.classList.add('active');
-  if(name==='vat') setTimeout(()=>{ drawPie('v-pie',0,0,'',''); calcVAT(); },50);
-  if(name==='deposit') setTimeout(()=>{ drawPie('d-pie',0,0,'',''); calcDeposit(); },50);
+  if(btn) btn.classList.add('active');
+  el('general-faq').style.display = name==='currency'?'none':'block';
+  if(name==='currency'){ initCurrency(); }
 }
 
-/* ---- INIT ---- */
+/* ============ MORTGAGE ============ */
+let mTerm=25, mPayType='annuity';
+function setTerm(t,btn){
+  mTerm=t;
+  document.querySelectorAll('#panel-mortgage .toggle-group:nth-of-type(1) .toggle-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  calcMortgage();
+}
+function setPayType(t){
+  mPayType=t;
+  el('m-type-annuity').classList.toggle('active',t==='annuity');
+  el('m-type-diff').classList.toggle('active',t==='diff');
+  calcMortgage();
+}
+function updateDP(){
+  const price=val('m-price'), dp=val('m-dp-range');
+  el('m-dp-pct').textContent=dp+'%';
+  el('m-dp-val').textContent=fmt(price*dp/100);
+  calcMortgage();
+}
+function calcMortgage(){
+  const price=val('m-price'), dpPct=val('m-dp-range'), dp=price*dpPct/100;
+  const loan=price-dp, rM=val('m-rate')/100/12, n=mTerm*12;
+  el('m-dp-val').textContent=fmt(dp);
+  el('m-dp-pct').textContent=dpPct+'%';
+  let monthly,totalPay,totalInterest;
+  if(mPayType==='annuity'){
+    monthly=rM===0?loan/n:loan*rM*Math.pow(1+rM,n)/(Math.pow(1+rM,n)-1);
+    totalPay=monthly*n; totalInterest=totalPay-loan;
+  } else {
+    const ppm=loan/n; totalInterest=0;
+    for(let i=1;i<=n;i++) totalInterest+=(loan-ppm*(i-1))*rM;
+    totalPay=loan+totalInterest; monthly=loan/n+loan*rM;
+  }
+  el('m-monthly').textContent=fmt(monthly);
+  el('m-monthly-sub').textContent=mPayType==='diff'?'first payment (decreases)':'fixed monthly payment';
+  el('m-loan').textContent=fmt(loan);
+  el('m-total').textContent=fmt(totalPay);
+  el('m-interest').textContent=fmt(totalInterest);
+  el('m-ratio').textContent=pct(totalInterest/loan*100);
+  el('m-leg-principal').textContent='Principal: '+fmt(loan);
+  el('m-leg-interest').textContent='Interest: '+fmt(totalInterest);
+  const isDark=document.documentElement.getAttribute('data-theme')==='dark';
+  drawPie('m-pie',loan,totalInterest,isDark?'#4ade80':'#1a3a2e','#b7852a');
+  let balance=loan, html='', ppm2=loan/n;
+  for(let i=1;i<=Math.min(12,n);i++){
+    let int,prin,pay;
+    if(mPayType==='annuity'){int=balance*rM;prin=monthly-int;pay=monthly;}
+    else{prin=ppm2;int=balance*rM;pay=prin+int;}
+    balance-=prin;
+    html+=`<tr><td>${i}</td><td>${fmt2(pay)}</td><td>${fmt2(prin)}</td><td>${fmt2(int)}</td><td>${fmt2(Math.max(0,balance))}</td></tr>`;
+  }
+  if(n>12) html+=`<tr><td colspan="5" style="text-align:center;color:var(--text3);font-style:italic">… ${n-12} more payments</td></tr>`;
+  el('m-schedule').innerHTML=html;
+}
+
+/* ============ VAT ============ */
+let vatType='add', vatRate=21;
+function setVatType(t){ vatType=t; el('v-type-add').classList.toggle('active',t==='add'); el('v-type-extract').classList.toggle('active',t==='extract'); calcVAT(); }
+function setVatRate(r){ vatRate=r; el('v-custom').value=r; document.querySelectorAll('#panel-vat .toggle-group:nth-of-type(2) .toggle-btn').forEach(b=>b.classList.toggle('active',parseFloat(b.textContent)===r)); calcVAT(); }
+function setVatCustom(){ vatRate=val('v-custom'); document.querySelectorAll('#panel-vat .toggle-group:nth-of-type(2) .toggle-btn').forEach(b=>b.classList.remove('active')); calcVAT(); }
+function calcVAT(){
+  const amount=val('v-amount'), r=vatRate/100;
+  let net,vat,gross;
+  if(vatType==='add'){net=amount;vat=amount*r;gross=amount+vat;}
+  else{gross=amount;net=amount/(1+r);vat=gross-net;}
+  el('v-main-label').textContent=vatType==='add'?'Total with VAT':'Price excl. VAT';
+  el('v-main').textContent=fmt2(vatType==='add'?gross:net);
+  el('v-net').textContent=fmt2(net); el('v-vat-amount').textContent=fmt2(vat); el('v-gross').textContent=fmt2(gross);
+  el('v-leg-net').textContent='Net: '+fmt2(net); el('v-leg-vat').textContent='VAT: '+fmt2(vat);
+  const isDark=document.documentElement.getAttribute('data-theme')==='dark';
+  drawPie('v-pie',net,vat,isDark?'#4ade80':'#1a3a2e','#b7852a');
+}
+
+/* ============ DEPOSIT ============ */
+let compound='quarterly';
+function setCompound(c){ compound=c; document.querySelectorAll('#panel-deposit .toggle-group .toggle-btn').forEach(b=>b.classList.toggle('active',b.textContent.toLowerCase()===c)); calcDeposit(); }
+function updateDepTerm(){ const t=val('d-term-range'); el('d-term-lbl').textContent=t; el('d-term-val').textContent=t+' yr'; calcDeposit(); }
+function calcDeposit(){
+  const P=val('d-amount'), r=val('d-rate')/100, years=val('d-term-range'), topup=val('d-topup');
+  const n=compound==='monthly'?12:compound==='quarterly'?4:compound==='yearly'?1:0;
+  let balance=P, totalDeposited=P, html='';
+  for(let y=1;y<=years;y++){
+    if(n===0){balance+=balance*r+topup*12;}
+    else{for(let p=0;p<n;p++) balance+=balance*(r/n); balance+=topup*12;}
+    totalDeposited+=topup*12;
+    html+=`<tr><td>${y}</td><td>${fmt(totalDeposited)}</td><td>${fmt(balance-totalDeposited)}</td><td>${fmt(balance)}</td></tr>`;
+  }
+  const totalInterest=balance-totalDeposited;
+  el('d-final').textContent=fmt(balance);
+  el('d-final-sub').textContent=`after ${years} year${years!==1?'s':''}`;
+  el('d-deposited').textContent=fmt(totalDeposited);
+  el('d-earned').textContent=fmt(totalInterest);
+  el('d-eff-rate').textContent=pct((Math.pow(balance/P,1/years)-1)*100);
+  el('d-roi').textContent=pct(totalInterest/totalDeposited*100);
+  el('d-leg-dep').textContent='Deposited: '+fmt(totalDeposited);
+  el('d-leg-int').textContent='Interest: '+fmt(totalInterest);
+  const isDark=document.documentElement.getAttribute('data-theme')==='dark';
+  drawPie('d-pie',totalDeposited,totalInterest,isDark?'#4ade80':'#1a3a2e',isDark?'#34d058':'#2d6a4f');
+  el('d-schedule').innerHTML=html;
+}
+
+/* ============ CURRENCY ============ */
+let currentPair='CZK', rates={}, rateChanges={}, rateChart=null, fetchTimer=null, lastFetch=null;
+const PAIRS_META = [
+  {code:'USD',name:'US Dollar',flag:'🇺🇸'},
+  {code:'GBP',name:'British Pound',flag:'🇬🇧'},
+  {code:'CHF',name:'Swiss Franc',flag:'🇨🇭'},
+  {code:'JPY',name:'Japanese Yen',flag:'🇯🇵'},
+  {code:'CAD',name:'Canadian Dollar',flag:'🇨🇦'},
+  {code:'AUD',name:'Australian Dollar',flag:'🇦🇺'},
+  {code:'NZD',name:'New Zealand Dollar',flag:'🇳🇿'},
+  {code:'SEK',name:'Swedish Krona',flag:'🇸🇪'},
+  {code:'NOK',name:'Norwegian Krone',flag:'🇳🇴'},
+  {code:'DKK',name:'Danish Krone',flag:'🇩🇰'},
+  {code:'PLN',name:'Polish Zloty',flag:'🇵🇱'},
+  {code:'CZK',name:'Czech Koruna',flag:'🇨🇿'},
+  {code:'HUF',name:'Hungarian Forint',flag:'🇭🇺'},
+  {code:'RON',name:'Romanian Leu',flag:'🇷🇴'},
+  {code:'BGN',name:'Bulgarian Lev',flag:'🇧🇬'},
+  {code:'HRK',name:'Croatian Kuna',flag:'🇭🇷'},
+  {code:'RSD',name:'Serbian Dinar',flag:'🇷🇸'},
+  {code:'TRY',name:'Turkish Lira',flag:'🇹🇷'},
+  {code:'UAH',name:'Ukrainian Hryvnia',flag:'🇺🇦'},
+  {code:'CNY',name:'Chinese Yuan',flag:'🇨🇳'},
+  {code:'KRW',name:'South Korean Won',flag:'🇰🇷'},
+  {code:'INR',name:'Indian Rupee',flag:'🇮🇳'},
+  {code:'SGD',name:'Singapore Dollar',flag:'🇸🇬'},
+  {code:'HKD',name:'Hong Kong Dollar',flag:'🇭🇰'},
+  {code:'AED',name:'UAE Dirham',flag:'🇦🇪'},
+  {code:'SAR',name:'Saudi Riyal',flag:'🇸🇦'},
+  {code:'ILS',name:'Israeli Shekel',flag:'🇮🇱'},
+  {code:'BRL',name:'Brazilian Real',flag:'🇧🇷'},
+  {code:'MXN',name:'Mexican Peso',flag:'🇲🇽'},
+  {code:'ZAR',name:'South African Rand',flag:'🇿🇦'},
+];
+const PAIRS = PAIRS_META.map(p=>p.code);
+const FEES={revolut:0.005, paypal:0.04, bank:0.03};
+
+function initCurrency(){
+  if(Object.keys(rates).length===0) fetchRates();
+  else calcCurrency();
+}
+
+async function fetchRates(){
+  el('c-rate-big').textContent='...';
+  el('c-updated').textContent='fetching rate...';
+  try {
+    const res = await fetch('https://api.frankfurter.app/latest?from=EUR&to='+PAIRS.join(','));
+    const data = await res.json();
+    rates = data.rates;
+    lastFetch = new Date();
+    updateUpdatedLabel();
+    renderPairGrid();
+    renderCurrencyGrid();
+    calcCurrency();
+    loadChart('1W', document.querySelector('.chart-tab.active'));
+    if(fetchTimer) clearInterval(fetchTimer);
+    fetchTimer = setInterval(()=>{ fetchRates(); }, 60000);
+  } catch(e) {
+    el('c-rate-big').textContent='—';
+    el('c-updated').textContent='Could not load rate. Check connection.';
+  }
+}
+
+function updateUpdatedLabel(){
+  if(!lastFetch) return;
+  const mins = Math.floor((new Date()-lastFetch)/60000);
+  el('c-updated').textContent = mins===0?'rate updated just now':`rate updated ${mins} minute${mins!==1?'s':''} ago`;
+}
+setInterval(updateUpdatedLabel, 30000);
+
+function selectPair(pair, btn){
+  currentPair = pair;
+  const meta = PAIRS_META.find(p=>p.code===pair)||{name:pair,flag:''};
+  const nameEl = el('c-selected-name');
+  if(nameEl) nameEl.textContent = pair+' · '+meta.name;
+  document.querySelectorAll('.c-pair-label').forEach(e=>e.textContent=pair);
+  el('c-pair-name').textContent=pair;
+  document.querySelectorAll('.pair-card').forEach(c=>c.classList.toggle('active-pair',c.dataset.pair===pair));
+  renderCurrencyGrid(el('c-search')?el('c-search').value:'');
+  calcCurrency();
+  loadChart(activeChartPeriod||'1W', document.querySelector('.chart-tab.active'));
+}
+
+function calcCurrency(){
+  const rate = rates[currentPair];
+  if(!rate){ el('c-rate-big').textContent='—'; return; }
+  const amount = val('c-amount');
+  const converted = amount * rate;
+  el('c-rate-big').textContent=rate.toFixed(4);
+  el('c-rate-sub').textContent=rate.toFixed(4)+' '+currentPair;
+  el('c-result').textContent=converted.toLocaleString('en-EU',{minimumFractionDigits:2,maximumFractionDigits:2})+' '+currentPair;
+  el('c-result-sub').textContent='at ECB mid-market rate';
+
+  const revolut = amount*(1-FEES.revolut)*rate;
+  const paypal = amount*(1-FEES.paypal)*rate*(1-0.025);
+  const bank = amount*(1-FEES.bank)*rate*(1-0.015);
+  el('fee-revolut').textContent=revolut.toFixed(2)+' '+currentPair;
+  el('fee-paypal').textContent=paypal.toFixed(2)+' '+currentPair;
+  el('fee-bank').textContent=bank.toFixed(2)+' '+currentPair;
+  el('fee-paypal-save').textContent='you lose '+(converted-paypal).toFixed(2)+' '+currentPair;
+  el('fee-paypal-save').style.color='var(--red)';
+  el('fee-bank-save').textContent='you lose '+(converted-bank).toFixed(2)+' '+currentPair;
+  el('fee-bank-save').style.color='var(--red)';
+}
+
+function renderPairGrid(){
+  const grid = el('pair-grid');
+  grid.innerHTML = PAIRS_META.map(p=>{
+    const r = rates[p.code]||0;
+    const change = rateChanges[p.code]||0;
+    const chSign = change>=0?'+':'';
+    const chClass = change>=0?'up':'down';
+    return `<div class="pair-card${p.code===currentPair?' active-pair':''}" data-pair="${p.code}" onclick="selectPair('${p.code}',null)">
+      <div class="pc-name">${p.flag} ${p.code}</div>
+      <div class="pc-rate">${r>0?r.toFixed(r>100?1:r>10?3:4):'—'}</div>
+      ${change!==0?`<div class="pc-change ${chClass}">${chSign}${change.toFixed(2)}%</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+function renderCurrencyGrid(filter=''){
+  const grid = el('c-currency-grid');
+  const f = filter.toLowerCase();
+  const filtered = PAIRS_META.filter(p=>
+    p.code.toLowerCase().includes(f) || p.name.toLowerCase().includes(f)
+  );
+  grid.innerHTML = filtered.map(p=>`
+    <button onclick="selectPair('${p.code}',this)" data-code="${p.code}"
+      style="padding:7px 4px;border:1px solid var(--border);border-radius:var(--radius-sm);
+      background:${p.code===currentPair?'var(--accent)':'var(--bg)'};
+      color:${p.code===currentPair?'var(--surface)':'var(--text2)'};
+      font-family:inherit;font-size:11px;font-weight:500;cursor:pointer;
+      transition:all .15s;text-align:center;">
+      ${p.flag}<br>${p.code}
+    </button>`).join('');
+}
+
+function filterCurrencies(){
+  renderCurrencyGrid(el('c-search').value);
+}
+
+let activeChartPeriod='1W';
+async function loadChart(period, btn){
+  activeChartPeriod=period;
+  if(btn){
+    document.querySelectorAll('.chart-tab').forEach(t=>t.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  el('chart-loading').style.display='flex';
+  const today = new Date();
+  const from = new Date(today);
+  if(period==='1W') from.setDate(from.getDate()-7);
+  else if(period==='1M') from.setMonth(from.getMonth()-1);
+  else from.setFullYear(from.getFullYear()-1);
+  const fmt = d => d.toISOString().split('T')[0];
+  try {
+    const res = await fetch(`https://api.frankfurter.app/${fmt(from)}..${fmt(today)}?from=EUR&to=${currentPair}`);
+    const data = await res.json();
+    const labels = Object.keys(data.rates);
+    const values = labels.map(d=>data.rates[d][currentPair]);
+    renderChart(labels,values);
+    el('chart-loading').style.display='none';
+  } catch(e){
+    el('chart-loading').textContent='Could not load chart data';
+  }
+}
+
+function renderChart(labels,values){
+  const ctx = el('rateChart').getContext('2d');
+  const isDark = document.documentElement.getAttribute('data-theme')==='dark';
+  const accentColor = isDark?'#4ade80':'#2d6a4f';
+  const gridColor = isDark?'rgba(255,255,255,0.06)':'rgba(0,0,0,0.06)';
+  const textColor = isDark?'#5a705a':'#9a9a90';
+  if(rateChart) rateChart.destroy();
+  rateChart = new Chart(ctx,{
+    type:'line',
+    data:{
+      labels,
+      datasets:[{
+        data:values,
+        borderColor:accentColor,
+        borderWidth:2,
+        pointRadius:0,
+        pointHoverRadius:4,
+        fill:true,
+        backgroundColor: isDark?'rgba(74,222,128,0.08)':'rgba(45,106,79,0.07)',
+        tension:0.3
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,callbacks:{label:ctx=>`${ctx.parsed.y.toFixed(4)} ${currentPair}`}}},
+      scales:{
+        x:{ticks:{color:textColor,maxTicksLimit:6,font:{size:10}},grid:{color:gridColor},border:{display:false}},
+        y:{ticks:{color:textColor,font:{size:10}},grid:{color:gridColor},border:{display:false}}
+      }
+    }
+  });
+}
+
+/* ============ INIT ============ */
 calcMortgage();
 calcVAT();
 calcDeposit();
+el('general-faq').style.display='block';
+// Populate country chips
+const chipsEl = el('country-chips-auto');
+if(chipsEl){
+  chipsEl.innerHTML = PAIRS_META.map(p=>`<a class="country-chip" onclick="selectPair('${p.code}',null);showCalc('currency',document.querySelector('.nav-tab'))">${p.flag} EUR → ${p.code}</a>`).join('');
+}
 </script>
 </body>
 </html>
